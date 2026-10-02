@@ -13,7 +13,8 @@
   const area2=w=>{if(!wordOK(w))return null;const [a,b,c]=[...w].map(ch=>MAP.get(ch));return Math.abs((b.x-a.x)*(c.y-a.y)-(c.x-a.x)*(b.y-a.y));};
   const area=w=>{const n=area2(w);return n===null?null:n/2;};
   const clone=o=>JSON.parse(JSON.stringify(o));
-  const defaultData=()=>({questions:[],words:[],disabledIds:[]});
+  const defaultData=()=>({questions:[],words:[],disabledIds:[],announcementUrl:''});
+  const validAnnouncementUrl=url=>!url||/^https:\/\/(?:www\.)?(?:x\.com|twitter\.com)\/[a-zA-Z0-9_]+\/status\/\d+(?:\/)?(?:\?[^\s#]*)?$/.test(url);
   function parseData(o){
     if(!o||!Array.isArray(o.questions)||!Array.isArray(o.words)||!Array.isArray(o.disabledIds))throw Error('questions / words / disabledIds が必要です。');
     if(o.questions.some(q=>!q||!q.id||!['A','B','C','D'].includes(q.genre)))throw Error('問題のIDまたはジャンルが不正です。');
@@ -22,7 +23,9 @@
     if(o.words.some(w=>!w||!wordOK(w.word)||!Array.isArray(w.tags)))throw Error('追加単語に不正な形式があります。');
     if(new Set(o.words.map(w=>w.word)).size!==o.words.length)throw Error('追加単語に重複があります。');
     if(o.disabledIds.some(id=>typeof id!=='string'))throw Error('無効化IDが不正です。');
-    return {questions:clone(o.questions),words:clone(o.words),disabledIds:[...new Set(o.disabledIds)]};
+    const announcementUrl=String(o.announcementUrl||'').trim();
+    if(!validAnnouncementUrl(announcementUrl))throw Error('告知ポストURLは https://x.com/ユーザー名/status/数字 の形式で入力してください。');
+    return {questions:clone(o.questions),words:clone(o.words),disabledIds:[...new Set(o.disabledIds)],announcementUrl};
   }
   const base=new Map((window.MS_QUESTIONS||[]).map(q=>[q.id,q]));
   const baseWords=new Set([...(window.MS_BASE_WORDS||[]),...(window.MS_EXTRA_WORDS||[]).map(x=>typeof x==='string'?x:x.word)]);
@@ -39,6 +42,7 @@
     catch(err){notice('ブラウザへの保存に失敗しました。JSファイルをダウンロードしてバックアップしてください。',true);}
     renderSummary();renderQuestions();renderWords();
   }
+  function renderAnnouncement(){ $('announcement-url').value=draft.announcementUrl||''; }
   function renderSummary(){
     const rows=questions(), totals=Object.fromEntries(['A','B','C','D'].map(g=>[g,rows.filter(q=>q.genre===g&&!isDisabled(q.id)&&q.status!=='不採用').length]));
     $('summary').innerHTML='<strong>'+rows.filter(q=>!isDisabled(q.id)&&q.status!=='不採用').length+'問</strong><div>'+Object.entries(totals).map(([g,n])=>g+' '+n).join('　')+'</div><small>追加した単語 '+draft.words.length+'語</small>';
@@ -163,7 +167,7 @@
   $('export-json').addEventListener('click',()=>{download('makesense-admin-backup.json',JSON.stringify(draft,null,2),'application/json;charset=utf-8');notice('JSONバックアップをダウンロードしました。');});
   $('import-json').addEventListener('change',async e=>{
     const file=e.target.files?.[0];if(!file)return;
-    try{const incoming=parseData(JSON.parse(await file.text()));if(!confirm('現在の管理データを読み込んだJSONで置き換えますか？'))return;draft=incoming;saveLocal();resetQuestion();resetWord();notice('JSONデータを読み込みました。');}
+    try{const incoming=parseData(JSON.parse(await file.text()));if(!confirm('現在の管理データを読み込んだJSONで置き換えますか？'))return;draft=incoming;saveLocal();resetQuestion();resetWord();renderAnnouncement();notice('JSONデータを読み込みました。');}
     catch(err){notice('読み込み失敗：'+err.message,true);}finally{e.target.value='';}
   });
   $('publish-gh').addEventListener('click',async()=>{
@@ -184,9 +188,17 @@
     let config;try{config=getConfig();}catch(err){ghStatus(err.message,true);return;}
     if(!confirm('現在の未公開編集を破棄し、GitHub上のデータで置き換えますか？ 必要なら先にJSONでバックアップしてください。'))return;
     const button=$('reload-gh');button.disabled=true;ghStatus('GitHubのデータを読み込み中…');
-    try{const remote=await githubFile(config);draft=clone(remote.data);Object.assign(published,clone(remote.data));try{localStorage.removeItem(KEY);}catch(err){}renderSummary();renderQuestions();renderWords();resetQuestion();resetWord();ghStatus('✓ GitHubの最新データを読み込みました。');}
+    try{const remote=await githubFile(config);draft=clone(remote.data);Object.assign(published,clone(remote.data));try{localStorage.removeItem(KEY);}catch(err){}renderSummary();renderQuestions();renderWords();resetQuestion();resetWord();renderAnnouncement();ghStatus('✓ GitHubの最新データを読み込みました。');}
     catch(err){ghStatus(err.message,true);}finally{button.disabled=false;}
   });
   $('gh-owner').addEventListener('change',saveSettings);$('gh-repo').addEventListener('change',saveSettings);$('gh-branch').addEventListener('change',saveSettings);$('gh-path').addEventListener('change',saveSettings);
-  resetQuestion();resetWord();renderSummary();renderQuestions();renderWords();
+  $('announcement-form').addEventListener('submit',event=>{
+    event.preventDefault();
+    const url=$('announcement-url').value.trim();
+    if(!validAnnouncementUrl(url)){notice('公式告知ポストのURLを入力してください（https://x.com/ユーザー名/status/数字）。',true);return;}
+    draft.announcementUrl=url;saveLocal();
+    notice(url?'告知ポストのURLを保存しました。「GitHubに公開する」で全端末へ反映してください。':'URLを解除しました。未設定の場合はゲームのURLが投稿されます。');
+  });
+  $('announcement-clear').addEventListener('click',()=>{draft.announcementUrl='';renderAnnouncement();saveLocal();});
+  resetQuestion();resetWord();renderSummary();renderQuestions();renderWords();renderAnnouncement();
 })();

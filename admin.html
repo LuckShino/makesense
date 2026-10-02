@@ -59,6 +59,11 @@
         <div class="panel"><div class="sectionhead"><div><h2>管理画面で追加した単語</h2></div><span id="word-count" class="count"></span></div><div id="word-list" class="word-list"></div><p class="muted">元から入っている基本辞書はそのまま残します。ここで追加した単語は編集・削除できます。</p></div>
       </section>
       <section id="view-sync" class="view" hidden>
+        <div class="panel"><div class="eyebrow">CLEAR POST</div><h2>クリアポスト・公式告知</h2>
+          <p class="muted">ハッシュタグは #メイク_センス です。告知ポスト公開後にURLを入力し、保存してGitHubに公開すると、クリアポストに告知ポストのURLが付きます。Xの引用カード表示は投稿画面で確認してください。未設定ならゲームのURLを共有します。</p>
+          <form id="announcement-form"><label>公式告知ポストのURL（公開後に入力）<input type="url" id="announcement-url" spellcheck="false" inputmode="url" placeholder="https://x.com/あなたのID/status/1234567890123456789"></label>
+            <div class="actions"><button type="submit" class="primary">告知ポストURLを保存</button><button type="button" class="secondary" id="announcement-clear">URLを削除する</button></div></form>
+        </div>
         <div class="panel"><div class="eyebrow">LOCAL SAVE</div><h2>この端末への保存・データ出力</h2><p class="muted">編集はこのブラウザに一時保存されます。同じURLで開いたゲームにはページ再読み込み後に反映されます。ローカルファイル（file://）ではブラウザにより保存領域が分かれるため、下の「データファイルをダウンロード」を利用してください。</p>
           <div class="actions"><button type="button" class="primary" id="export-js">更新データのJSをダウンロード</button><button type="button" class="secondary" id="export-json">JSONでバックアップ</button><label class="upload">JSONを読み込む<input type="file" id="import-json" accept="application/json,.json" hidden></label></div>
           <p class="muted">JS版はサイト内の <code>data/admin-data.js</code> と入れ替えると、公開データとして反映できます。変更前にバックアップを取ってください。</p>

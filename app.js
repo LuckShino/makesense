@@ -288,16 +288,27 @@
     const results=state.history.filter(x=>filter==='ALL'||x.genre===filter).slice().reverse();
     $('#log-list').innerHTML=results.length?results.map(r=>`<div class="log-entry"><span class="log-entry__index">#${String(r.n).padStart(3,'0')} <span>／ ${r.round}周目</span></span><span class="log-entry__words">${esc(r.enemy)} <i>VS</i> ${esc(r.chosen)}</span><span class="log-entry__outcome log-entry__outcome--${r.outcome.toLowerCase()}">${r.outcome}</span><span class="log-entry__genre">${r.genre==='BOSS'?'異論':`GENRE ${r.genre}`}</span></div>`).join(''):`<div class="log-empty">まだ記録はありません。<br>まずは一戦、挑んでみよう。</div>`;
   }
-  const shareText = () => `『メイクセンス』を${state.round}周目・${state.total}戦でクリア！\n異論を覆しました。\n#メイクセンス`;
+  const shareText = () => `『メイクセンス』を${state.round}周目・${state.total}戦でクリア！\n異論を覆しました。\n#メイク_センス`;
   const liveUrl=()=>/^https?:$/.test(window.location.protocol)&&!['localhost','127.0.0.1'].includes(window.location.hostname)&&!window.location.hostname.endsWith('.test')?window.location.origin+window.location.pathname:'';
+  const announcementUrl=()=>{
+    let data=window.MS_ADMIN_DATA||{};
+    try{
+      const local=JSON.parse(localStorage.getItem(DRAFT_KEY)||'null');
+      if(local&&Array.isArray(local.questions)&&Array.isArray(local.words)&&Array.isArray(local.disabledIds))data=local;
+    }catch(err){}
+    const url=String(data.announcementUrl||'').trim();
+    return /^https:\/\/(?:www\.)?(?:x\.com|twitter\.com)\/[a-zA-Z0-9_]+\/status\/\d+(?:\/)?(?:\?[^\s#]*)?$/.test(url)?url:'';
+  };
+  // X usually renders a post URL included in the text as a quote card, but X controls presentation.
+  const shareBody=()=>shareText()+(announcementUrl()?'\n'+announcementUrl():liveUrl()?'\n'+liveUrl():'');
   function share(){
-    const url=`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText())}${liveUrl()?`&url=${encodeURIComponent(liveUrl())}`:''}`;
+    const url=`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareBody())}`;
     const opened=window.open(url,'_blank','noopener,noreferrer');
     if(!opened)window.location.href=url;
   }
   async function copyShare(){
-    try{await navigator.clipboard.writeText(shareText()+(liveUrl()?'\n'+liveUrl():''));toast('クリア投稿文をコピーしました。');}
-    catch(e){try{const ta=document.createElement('textarea');ta.value=shareText()+(liveUrl()?'\n'+liveUrl():'');document.body.append(ta);ta.select();document.execCommand('copy');ta.remove();toast('クリア投稿文をコピーしました。');}catch(err){toast('コピーできませんでした。');}}
+    try{await navigator.clipboard.writeText(shareBody());toast('クリア投稿文をコピーしました。');}
+    catch(e){try{const ta=document.createElement('textarea');ta.value=shareBody();document.body.append(ta);ta.select();document.execCommand('copy');ta.remove();toast('クリア投稿文をコピーしました。');}catch(err){toast('コピーできませんでした。');}}
   }
   function reset(){
     if(!confirm('現在の進行状況と対戦ログをすべて削除して、最初から始めますか？'))return;
