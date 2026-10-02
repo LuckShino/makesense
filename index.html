@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0c1220">
+  <meta name="description" content="言葉を選び、勝敗の意味を見つけ出せ。4人の出題者を突破して、最後の異論を覆す謎解きゲーム。">
+  <title>メイクセンス | MAKE SENSE</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="data/questions.js" defer></script>
+  <script src="data/words.js" defer></script>
+  <script src="data/admin-data.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="ambient ambient--left" aria-hidden="true"></div>
+  <div class="ambient ambient--right" aria-hidden="true"></div>
+  <div class="site-shell">
+    <header class="site-header">
+      <button type="button" class="brand" data-global="home" aria-label="メイクセンスのトップ画面へ">
+        <span class="brand__symbol" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="brand__word">MAKE<span>SENSE</span><small>メイクセンス</small></span>
+      </button>
+      <nav class="header-actions" aria-label="ゲームメニュー">
+        <button type="button" class="header-button" data-global="rules"><span aria-hidden="true">?</span><span class="header-button__label">ルール</span></button>
+        <button type="button" class="header-button" data-global="log"><span aria-hidden="true">▤</span><span class="header-button__label">対戦ログ</span><span id="log-count" class="header-button__count">0</span></button>
+      </nav>
+    </header>
+    <main id="app" tabindex="-1" aria-live="polite"></main>
+    <footer class="site-footer"><span>MAKE SENSE</span><span>言葉で挑む、法則発見ゲーム。</span><button type="button" data-global="reset" class="footer-reset">最初からやり直す</button></footer>
+  </div>
+  <dialog id="rules-dialog" class="modal" aria-labelledby="rules-title">
+    <form method="dialog"><button class="modal-close" aria-label="閉じる">×</button></form>
+    <div class="modal-label">HOW TO PLAY</div>
+    <h2 id="rules-title">ルールは、たったの3つ。</h2>
+    <ol class="rule-list">
+      <li><b>言葉を選ぶ。</b><span>相手が出した三文字の言葉に対し、三択から一つ選んで対戦。選択肢にはWIN・DRAW・LOSEがそれぞれ一つずつあります。</span></li>
+      <li><b>勝敗を記録する。</b><span>WINなら次の相手へ。DRAW・LOSEでも同じ相手から別問題が出題されます。対戦ログはいつでも見返せます。</span></li>
+      <li><b>「異論」を覆す。</b><span>4人に勝ったら最終戦。五十音表から一般的な三文字の単語を作って挑戦してください。</span></li>
+    </ol>
+    <p class="modal-note">勝敗を決める本当の法則は秘密。問題が尽きた場合は同じジャンルの問題が再登場します。進行状況はこのブラウザに自動保存されます。</p>
+    <form method="dialog"><button class="button button--primary modal-ok">わかった</button></form>
+  </dialog>
+  <dialog id="log-dialog" class="modal modal--log" aria-labelledby="log-title">
+    <form method="dialog"><button class="modal-close" aria-label="閉じる">×</button></form>
+    <div class="modal-label">BATTLE ARCHIVE</div>
+    <h2 id="log-title">対戦ログ</h2>
+    <div id="log-summary" class="log-summary"></div>
+    <div id="log-filters" class="log-filters" role="group" aria-label="ジャンルで絞り込み"></div>
+    <div id="log-list" class="log-list" aria-live="polite"></div>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
