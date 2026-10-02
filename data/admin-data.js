@@ -1,2 +1,8 @@
-/* 管理画面で追加・変更した公開データ。管理画面の「GitHubに公開」で更新されます。 */
-window.MS_ADMIN_DATA = {"questions":[],"words":[],"disabledIds":[]};
+/* MAKE SENSE / admin-data.js — 管理画面から生成された公開データ */
+window.MS_ADMIN_DATA = {
+  "questions": [],
+  "words": [],
+  "disabledIds": [
+    "X007"
+  ]
+};
