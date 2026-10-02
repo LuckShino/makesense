@@ -3,10 +3,10 @@
   'use strict';
   const GENRES = ['A','B','C','D'];
   const ACTORS = {
-    A:{name:'ロジカ',role:'法則の探偵',headline:'その根拠は、正しい？',line:'理由があるなら、選んでみて。',sub:'数字と常識を手がかりに',icon:'⌕'},
-    B:{name:'コレクタ',role:'ことばの収集家',headline:'似たものを、比べよう。',line:'同じ仲間でも、同じ強さとは限らない。',sub:'カテゴリが揃った言葉',icon:'✳'},
-    C:{name:'モジカ',role:'文字の仕立て屋',headline:'形を揃えて、勝負。',line:'二文字が同じ。その先は？',sub:'連続する二文字が共通',icon:'⌗'},
-    D:{name:'ノイズ',role:'気まぐれな旅人',headline:'筋道なんて、いらない。',line:'考えても、考えなくても。一つ選んで。',sub:'自由気ままな言葉',icon:'✧'}
+    A:{name:'ロジカ',role:'出題者 A',headline:'最初の一戦。',line:'さあ、どれにする？',sub:'勝てば次の出題者へ',icon:'⌕'},
+    B:{name:'コレクタ',role:'出題者 B',headline:'次の一戦。',line:'さあ、勝負しよう。',sub:'勝てば次の出題者へ',icon:'✳'},
+    C:{name:'モジカ',role:'出題者 C',headline:'続いての一戦。',line:'どれがいいと思う？',sub:'勝てば次の出題者へ',icon:'⌗'},
+    D:{name:'ノイズ',role:'出題者 D',headline:'四人目の一戦。',line:'思い切って選んで。',sub:'勝てば4人突破',icon:'✧'}
   };
   const KANA_ROWS = [
     ['あ','い','う','え','お'],['か','き','く','け','こ'],['さ','し','す','せ','そ'],
@@ -170,15 +170,15 @@
   const tally = () => `<div class="status-figures"><span>${state.round}<small>周目</small></span><i></i><span>${state.total}<small>戦</small></span></div>`;
   function introView(){
     return `<section class="intro">
-      <div class="intro__eyebrow"><span class="pulse-dot"></span> WORD × REASON × DISCOVERY</div>
+      <div class="intro__eyebrow"><span class="pulse-dot"></span> THREE WORDS × FOUR CHALLENGERS</div>
       <h1 class="intro__title">MAKE<br><em>SENSE<span>.</span></em></h1>
       <p class="intro__japanese">メイクセンス</p>
-      <p class="intro__lead">その勝敗に、<br class="mobile-only">筋は通っているか。</p>
-      <p class="intro__copy">3文字の言葉で、4人の出題者に挑戦。<br>戦いの記録を手がかりに、最後の「異論」を覆せ。</p>
+      <p class="intro__lead">選ぶのは、<br class="mobile-only">たった三文字。</p>
+      <p class="intro__copy">3文字の言葉で、4人の出題者に挑戦。<br>それぞれに勝って、先へ進もう。</p>
       <div class="intro__actions"><button class="button button--primary button--large" data-action="start">${state.total||state.currentId?'続きから始める':'ゲームを始める'}<span aria-hidden="true">↗</span></button><button class="button button--subtle" data-action="rules">遊び方を見る</button></div>
       <div class="intro__hint">${storageOK?'進行状況は、このブラウザに自動保存されます。':'保存機能が利用できません。ブラウザの設定をご確認ください。'}</div>
       <div class="intro__cast-title"><span>THE FOUR CHALLENGERS</span><span>4人の出題者</span></div>
-      <div class="cast-grid">${GENRES.map(g=>`<article class="cast-card cast-card--${g.toLowerCase()}">${heroAvatar(g)}<div class="cast-card__code">GENRE ${g}</div><h3>${ACTORS[g].name}</h3><p>${ACTORS[g].role}</p><span>${ACTORS[g].sub}</span></article>`).join('')}</div>
+      <div class="cast-grid">${GENRES.map(g=>`<article class="cast-card cast-card--${g.toLowerCase()}">${heroAvatar(g)}<div class="cast-card__code">GENRE ${g}</div><h3>${ACTORS[g].name}</h3></article>`).join('')}</div>
       <p class="intro__bottom">三択にはWIN・DRAW・LOSEが、それぞれひとつ。</p>
     </section>`;
   }
@@ -191,7 +191,7 @@
       <div class="game-topline"><div class="breadcrumb">ROUND ${String(state.round).padStart(2,'0')} <span>/</span> ${state.stage+1} OF 4</div>${tally()}</div>
       ${stageTrack()}
       <div class="battle-grid">
-        <div class="enemy-panel"><div class="enemy-panel__mark">CHALLENGER <b>${g}</b></div>${heroAvatar(g)}<p class="enemy-panel__role">${actor.role}</p><h1>${actor.name}</h1><p class="enemy-panel__line">「${actor.line}」</p><div class="enemy-panel__footer">${actor.sub}</div></div>
+        <div class="enemy-panel"><div class="enemy-panel__mark">CHALLENGER <b>${g}</b></div>${heroAvatar(g)}<p class="enemy-panel__role">${actor.role}</p><h1>${actor.name}</h1><p class="enemy-panel__line">「${actor.line}」</p></div>
         <div class="challenge-panel"><div class="challenge-panel__top"><span class="micro-label">YOUR CHALLENGE</span><span class="challenge-panel__seq">QUESTION <span class="challenge-panel__dot">•</span> ${esc(q.id)}</span></div>
           <p class="challenge-panel__prompt">この言葉に<span>勝てる</span>のは？</p>
           <div class="enemy-word" aria-label="相手の言葉：${esc(q.enemy)}">${word(q.enemy)}</div>
@@ -207,7 +207,7 @@
     const win=r.outcome==='WIN',draw=r.outcome==='DRAW';
     const heading=win?(isBoss?'異論を覆した。':'見事、一本。'):draw?'引き分け。':isBoss?'異論は覆せなかった。':'今回は、相手の勝ち。';
     const description=isBoss?(win?'あなたの言葉が、最後の異論を上回った。':draw?'同じ強さ。別の言葉でもう一度挑める。':'これまでの記録は残ったまま。4人に再び挑もう。'):(win?'次の出題者へ進もう。':'勝利数はそのまま。新しい問題でもう一戦。');
-    const button=isBoss?(win?'結果を見る':draw?'もう一度挑む':'次の周回へ'):win?(state.stage===3?'異論に挑む':'次の相手へ'):'もう一戦';
+    const button=isBoss?(win?'結果を見る':draw?'もう一度挑む':'次の周回へ'):win?(state.stage===3?'次へ進む':'次の相手へ'):'もう一戦';
     return `<section class="outcome-view outcome-view--${r.outcome.toLowerCase()}">
       <div class="outcome-view__top">${isBoss?'FINAL BATTLE':`GENRE ${r.genre}`} / BATTLE ${String(state.total).padStart(2,'0')}</div>
       <div class="outcome-view__seal">${r.outcome==='WIN'?'✦':r.outcome==='DRAW'?'＝':'×'}</div>
@@ -217,7 +217,7 @@
       <p class="outcome-view__foot">${tally()}</p>
     </section>`;
   }
-  const kanaTable = () => `<div class="kana-board" aria-label="五十音表">${KANA_ROWS.map((row,i)=>`<div class="kana-row"><span class="kana-row__label">${i===10?'ん':row.filter(Boolean)[0]}行</span>${row.map(k=>k?`<button type="button" class="kana-button" data-action="kana" data-kana="${k}" aria-label="${k}" ${state.bossInput.length>=3?'disabled':''}>${k}</button>`:`<span class="kana-blank" aria-hidden="true"></span>`).join('')}</div>`).join('')}</div>`;
+  const kanaTable = () => `<div class="kana-board" role="group" aria-label="五十音表。右上が『あ』です"><div class="kana-grid">${[0,1,2,3,4].map(v=>[...KANA_ROWS].reverse().map(row=>row[v]).map(k=>k?`<button type="button" class="kana-button" data-action="kana" data-kana="${k}" aria-label="${k}" ${state.bossInput.length>=3?'disabled':''}>${k}</button>`:`<span class="kana-blank" aria-hidden="true"></span>`).join('')).join('')}</div></div>`;
   function bossView(){
     return `<section class="boss-view"><div class="boss-view__mark"><span>FINAL CHALLENGER</span><span>${tally()}</span></div>
       <div class="boss-view__orb"><span>異</span><span>論</span></div>
@@ -282,7 +282,8 @@
   function openModal(id){const modal=$(id);if(modal&&typeof modal.showModal==='function'&&!modal.open)modal.showModal();}
   function renderLog(filter='ALL'){
     $('#log-summary').innerHTML=`<div><b>${state.total}</b><small>総対戦</small></div><div><b>${state.wins}</b><small>WIN</small></div><div><b>${state.draws}</b><small>DRAW</small></div><div><b>${state.losses}</b><small>LOSE</small></div>`;
-    const filters=[['ALL','すべて'],['A','A'],['B','B'],['C','C'],['D','D'],['BOSS','異論']];
+    const filters=[['ALL','すべて'],['A','A'],['B','B'],['C','C'],['D','D']];
+    if(state.stage>=4||state.history.some(r=>r.genre==='BOSS')||state.cleared)filters.push(['BOSS','異論']);
     $('#log-filters').innerHTML=filters.map(([k,label])=>`<button type="button" data-log-filter="${k}" class="log-filter ${filter===k?'log-filter--active':''}">${label}</button>`).join('');
     const results=state.history.filter(x=>filter==='ALL'||x.genre===filter).slice().reverse();
     $('#log-list').innerHTML=results.length?results.map(r=>`<div class="log-entry"><span class="log-entry__index">#${String(r.n).padStart(3,'0')} <span>／ ${r.round}周目</span></span><span class="log-entry__words">${esc(r.enemy)} <i>VS</i> ${esc(r.chosen)}</span><span class="log-entry__outcome log-entry__outcome--${r.outcome.toLowerCase()}">${r.outcome}</span><span class="log-entry__genre">${r.genre==='BOSS'?'異論':`GENRE ${r.genre}`}</span></div>`).join(''):`<div class="log-empty">まだ記録はありません。<br>まずは一戦、挑んでみよう。</div>`;
