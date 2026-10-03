@@ -22,6 +22,7 @@
         <span class="brand__word">MAKE<span>SENSE</span><small>メイクセンス</small></span>
       </button>
       <nav class="header-actions" aria-label="ゲームメニュー">
+        <button type="button" id="hint-toggle" class="header-button header-button--hint" data-global="hint-toggle" hidden>ヒント OFF</button>
         <button type="button" class="header-button" data-global="rules"><span aria-hidden="true">?</span><span class="header-button__label">ルール</span></button>
         <button type="button" class="header-button" data-global="log"><span aria-hidden="true">▤</span><span class="header-button__label">対戦ログ</span><span id="log-count" class="header-button__count">0</span></button>
       </nav>
@@ -45,6 +46,7 @@
     <form method="dialog"><button class="modal-close" aria-label="閉じる">×</button></form>
     <div class="modal-label">BATTLE ARCHIVE</div>
     <h2 id="log-title">対戦ログ</h2>
+    <div id="log-timer"></div>
     <div id="log-summary" class="log-summary"></div>
     <div id="log-filters" class="log-filters" role="group" aria-label="ジャンルで絞り込み"></div>
     <div id="log-list" class="log-list" aria-live="polite"></div>

@@ -26,3 +26,23 @@
 .kana-grid{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:5px}
 .kana-grid .kana-button,.kana-grid .kana-blank{width:100%;height:auto;min-height:40px;aspect-ratio:1/1}
 @media(max-width:680px){.kana-board{padding:7px}.kana-grid{gap:3px}.kana-grid .kana-button,.kana-grid .kana-blank{min-height:0;aspect-ratio:1/1;font-size:clamp(12px,3.9vw,17px);border-radius:5px}}
+
+/* Timed final challenge and optional fifth-round hints. */
+[hidden]{display:none!important}
+.word-score{font-size:.55em;color:#d8e78e;white-space:nowrap;vertical-align:middle;font-weight:800;letter-spacing:0}
+.enemy-word .word-score{align-self:center;display:inline-block;margin:0 0 0 10px}
+.log-entry__words .word-score{font-size:.76em;color:#d8e78e}
+.outcome-compare .word-score{font-size:.58em;color:#d8e78e}
+.header-button--hint{white-space:nowrap;border-color:#758553;color:#dfedaa;font-size:11px;font-weight:850}
+.header-button--hint[aria-pressed="true"]{border-color:#d6f485;background:#344129;color:#e8ffb7}
+.boss-clock{display:flex;align-items:center;justify-content:center;gap:16px;border:1px solid #775a96;border-radius:14px;background:#251f37;padding:10px 24px;margin:10px 0 14px;width:min(390px,100%)}
+.boss-clock small{font-size:11px;color:#cbb4df}.boss-clock strong{font:900 31px Arial,Helvetica,sans-serif;font-variant-numeric:tabular-nums;color:#e9d4ff;min-width:116px}
+.boss-clock--result{width:min(400px,100%);margin:-10px auto 24px}
+.clock--urgent{color:#ff8e9b!important;animation:clockPulse .7s infinite alternate}
+@keyframes clockPulse{from{opacity:1}to{opacity:.64}}
+.log-clock{display:flex;justify-content:space-between;align-items:center;gap:16px;background:#322844;border:1px solid #8e72a5;border-radius:12px;padding:13px;margin:10px 0 18px;color:#e8d5ff;font-size:11px;font-weight:850}
+.log-clock strong{font:900 23px Arial;font-variant-numeric:tabular-nums}
+.hint-view{min-height:65vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;max-width:620px;margin:0 auto;padding:35px 10px}
+.hint-view__eyebrow{font:800 11px Arial;letter-spacing:.2em;color:#d5eda3}.hint-view__icon{font-size:70px;color:#d5eda3;margin:18px}.hint-view h1{font-size:clamp(27px,6vw,43px);margin:0 0 16px}.hint-view p{font-size:13px;color:#b8c7d6;line-height:2}.hint-view__actions{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:22px 0 0}.hint-view__note{font-size:11px!important;color:#849bb0!important}
+@media(max-width:680px){.header-button--hint{font-size:10px;padding:8px}.boss-clock strong{font-size:27px}.hint-view__actions{width:100%}.hint-view__actions .button{width:100%}.log-clock{flex-direction:column;gap:4px}.enemy-word .word-score{font-size:17px}}
+.boss-scoreline{text-align:center;margin:-2px 0 12px;font-weight:800;color:#deefaf}.boss-scoreline .word-score{font-size:1em}

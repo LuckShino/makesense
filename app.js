@@ -19,6 +19,8 @@
   const BLOCKED = new Set(['うんこ','うんち']);
   const BOSS_WORDS = new Set(['あんこ','あんよ','ほあん']);
   const STORAGE_KEY='makesense-save-v2';
+  const BOSS_DURATION_MS=60000;
+  const LOG_CLOCK_RATE=0.2;
   const $=s=>document.querySelector(s);
   const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const cleanWord = w => typeof w==='string' && Array.from(w).length===3 && !BLOCKED.has(w) && [...w].every(ch=>KANA.has(ch));
@@ -130,7 +132,8 @@
   loadBank();
   const genrePools = Object.fromEntries(GENRES.map(g=>[g,compiled.filter(q=>q.genre===g)]));
   function initial(){return {v:2,phase:'intro',round:1,stage:0,total:0,wins:0,draws:0,losses:0,
-    used:{A:[],B:[],C:[],D:[]},recycles:{A:0,B:0,C:0,D:0},currentId:null,bossInput:'',pending:null,history:[],cleared:false};}
+    used:{A:[],B:[],C:[],D:[]},recycles:{A:0,B:0,C:0,D:0},currentId:null,bossInput:'',pending:null,history:[],cleared:false,
+    bossRemainingMs:null,bossClockAt:null,bossClockRate:0,hintMode:false,hintOffered:false};}
   function loadSave(){
     try{
       const data=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
@@ -139,6 +142,58 @@
     return initial();
   }
   let state=loadSave();
+  // Saves created before the timed-boss update retain their progress and get a fresh clock.
+  if(state.stage>=4&&state.bossRemainingMs===null&&(state.phase==='boss'||(state.phase==='bossResult'&&state.pending?.outcome==='DRAW'))){
+    state.bossRemainingMs=BOSS_DURATION_MS;state.bossClockAt=Date.now();state.bossClockRate=state.phase==='boss'?1:0;
+  }
+  const hintAvailable=()=>state.history.filter(r=>r.genre==='BOSS'&&r.outcome==='LOSE').length>=4;
+  const scoreText=w=>{const value=area2(w);return value===null?'':` <span class="word-score">(${value/2})</span>`;};
+  const shownWord=w=>esc(w)+(state.hintMode?scoreText(w):'');
+  const clockActive=()=>state.stage>=4&&!state.cleared&&state.bossRemainingMs!==null&&(state.phase==='boss'||(state.phase==='bossResult'&&state.pending?.outcome==='DRAW'));
+  const clockText=()=>{const sec=Math.max(0,state.bossRemainingMs||0)/1000;const min=Math.floor(sec/60);return `${String(min).padStart(2,'0')}:${(sec-min*60).toFixed(1).padStart(4,'0')}`;};
+  function settleClock(now=Date.now()){
+    if(state.bossRemainingMs===null||state.bossClockAt===null)return;
+    const elapsed=Math.max(0,now-state.bossClockAt);
+    if(state.bossClockRate>0)state.bossRemainingMs=Math.max(0,state.bossRemainingMs-elapsed*state.bossClockRate);
+    state.bossClockAt=now;
+  }
+  function setClockRate(rate){
+    settleClock();state.bossClockRate=rate;state.bossClockAt=Date.now();save();
+    if(state.bossRemainingMs!==null&&state.bossRemainingMs<=0)timeOutBoss();
+    updateClockDisplay();
+  }
+  function beginBossClock(){
+    if(state.bossRemainingMs===null)state.bossRemainingMs=BOSS_DURATION_MS;
+    setClockRate(1);
+  }
+  function updateClockDisplay(){
+    for(const el of document.querySelectorAll('[data-clock]')){
+      el.textContent=clockText();el.classList.toggle('clock--urgent',state.bossRemainingMs!==null&&state.bossRemainingMs<=10000);
+    }
+  }
+  let lastClockSave=0;
+  function clockTick(){
+    if(state.bossRemainingMs===null||state.bossClockRate===0)return;
+    settleClock();updateClockDisplay();
+    if(state.bossRemainingMs<=0){timeOutBoss();return;}
+    if(Date.now()-lastClockSave>1000){lastClockSave=Date.now();save();}
+  }
+  function timeOutBoss(){
+    if(!clockActive()||state.phase==='clear')return;
+    state.bossRemainingMs=0;state.bossClockRate=0;state.bossClockAt=Date.now();
+    record('いろん','時間切れ','LOSE','BOSS','FINAL-TIMEOUT');
+    state.phase='bossResult';
+    const modal=$('#log-dialog');if(modal?.open)modal.close();
+    save();render();
+  }
+  // A saved boss clock is settled before the view is restored. A reloaded dialog is closed.
+  if(state.bossRemainingMs!==null){
+    settleClock();
+    state.bossClockRate=state.phase==='boss'?1:0;
+    state.bossClockAt=Date.now();
+    if((state.phase==='boss'||(state.phase==='bossResult'&&state.pending?.outcome==='DRAW'))&&state.bossRemainingMs<=0)timeOutBoss();
+    else save();
+  }
   function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));storageOK=true;}catch(err){storageOK=false;}}
   function toast(message){const el=$('#toast');if(!el)return;el.textContent=message;el.classList.add('toast--show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('toast--show'),3300);}
   function chooseQuestion(genre,previous){
@@ -194,7 +249,7 @@
         <div class="enemy-panel"><div class="enemy-panel__mark">CHALLENGER <b>${g}</b></div>${heroAvatar(g)}<p class="enemy-panel__role">${actor.role}</p><h1>${actor.name}</h1><p class="enemy-panel__line">「${actor.line}」</p></div>
         <div class="challenge-panel"><div class="challenge-panel__top"><span class="micro-label">YOUR CHALLENGE</span><span class="challenge-panel__seq">QUESTION <span class="challenge-panel__dot">•</span> ${esc(q.id)}</span></div>
           <p class="challenge-panel__prompt">この言葉に<span>勝てる</span>のは？</p>
-          <div class="enemy-word" aria-label="相手の言葉：${esc(q.enemy)}">${word(q.enemy)}</div>
+          <div class="enemy-word" aria-label="相手の言葉：${esc(q.enemy)}">${word(q.enemy)}${state.hintMode?scoreText(q.enemy):''}</div>
           <div class="choice-list">${selections.map((k,i)=>`<button class="choice" data-action="answer" data-choice="${k}" aria-label="選択肢${i+1}、${esc(q[k])}"><span class="choice__index">0${i+1}</span><span class="choice__word">${esc(q[k])}</span><span class="choice__arrow" aria-hidden="true">↗</span></button>`).join('')}</div>
           <p class="challenge-panel__foot">WIN・DRAW・LOSE はそれぞれひとつ。<br>選んだ言葉と結果は、対戦ログに残ります。</p>
         </div>
@@ -206,22 +261,23 @@
     if(!r)return introView();
     const win=r.outcome==='WIN',draw=r.outcome==='DRAW';
     const heading=win?(isBoss?'異論を覆した。':'見事、一本。'):draw?'引き分け。':isBoss?'異論は覆せなかった。':'今回は、相手の勝ち。';
-    const description=isBoss?(win?'あなたの言葉が、最後の異論を上回った。':draw?'同じ強さ。別の言葉でもう一度挑める。':'これまでの記録は残ったまま。4人に再び挑もう。'):(win?'次の出題者へ進もう。':'勝利数はそのまま。新しい問題でもう一戦。');
-    const button=isBoss?(win?'結果を見る':draw?'もう一度挑む':'次の周回へ'):win?(state.stage===3?'次へ進む':'次の相手へ'):'もう一戦';
+    const description=isBoss?(win?'あなたの言葉が、最後の異論を上回った。':draw?'同じ強さ。残り時間を引き継いで再挑戦できる。':r.chosen==='時間切れ'?'制限時間が終了。記録を残して1人目から再挑戦しよう。':'これまでの記録は残ったまま。4人に再び挑もう。'):(win?'次の出題者へ進もう。':'勝利数はそのまま。新しい問題でもう一戦。');
+    const button=isBoss?(win?'結果を見る':draw?'再開':'リスタート'):win?'次へ':'もう一戦';
     return `<section class="outcome-view outcome-view--${r.outcome.toLowerCase()}">
       <div class="outcome-view__top">${isBoss?'FINAL BATTLE':`GENRE ${r.genre}`} / BATTLE ${String(state.total).padStart(2,'0')}</div>
       <div class="outcome-view__seal">${r.outcome==='WIN'?'✦':r.outcome==='DRAW'?'＝':'×'}</div>
       <div class="outcome-view__status">${r.outcome}</div><h1>${heading}</h1><p class="outcome-view__desc">${description}</p>
-      <div class="outcome-compare"><div><small>相手の言葉</small><strong>${esc(r.enemy)}</strong></div><span class="outcome-compare__versus">VS</span><div><small>あなたの言葉</small><strong>${esc(r.chosen)}</strong></div></div>
-      <div class="outcome-view__actions"><button class="button button--primary button--large" data-action="continue">${button}<span aria-hidden="true">↗</span></button><button class="button button--subtle" data-action="log">対戦ログを見る</button></div>
+      <div class="outcome-compare"><div><small>相手の言葉</small><strong>${shownWord(r.enemy)}</strong></div><span class="outcome-compare__versus">VS</span><div><small>あなたの言葉</small><strong>${shownWord(r.chosen)}</strong></div></div>${isBoss?`<div class="boss-clock boss-clock--result"><small>残り時間</small><strong data-clock>${clockText()}</strong></div>`:''}
+      <div class="outcome-view__actions"><button class="button button--primary button--large" data-action="continue">${button}<span aria-hidden="true">↗</span></button><button class="button button--subtle" data-action="log">ログを確認</button></div>
       <p class="outcome-view__foot">${tally()}</p>
     </section>`;
   }
   const kanaTable = () => `<div class="kana-board" role="group" aria-label="五十音表。右上が『あ』です"><div class="kana-grid">${[0,1,2,3,4].map(v=>[...KANA_ROWS].reverse().map(row=>row[v]).map(k=>k?`<button type="button" class="kana-button" data-action="kana" data-kana="${k}" aria-label="${k}" ${state.bossInput.length>=3?'disabled':''}>${k}</button>`:`<span class="kana-blank" aria-hidden="true"></span>`).join('')).join('')}</div></div>`;
   function bossView(){
     return `<section class="boss-view"><div class="boss-view__mark"><span>FINAL CHALLENGER</span><span>${tally()}</span></div>
-      <div class="boss-view__orb"><span>異</span><span>論</span></div>
+      <div class="boss-view__orb"><span>異</span><span>論</span></div>${state.hintMode?`<div class="boss-scoreline">いろん${scoreText('いろん')}</div>`:''}
       <div class="boss-view__center"><span class="micro-label">FINAL BATTLE</span><h1>異論を、覆せ。</h1><p>五十音表から言葉を選び、<br>「異論」に勝てる一般的な三文字の単語を作れ。</p>
+        <div class="boss-clock" aria-live="off"><small>残り時間</small><strong data-clock>${clockText()}</strong></div>
         <div class="boss-word-label">YOUR WORD</div><div class="boss-slots">${[0,1,2].map(i=>`<div class="boss-slot ${state.bossInput[i]?'boss-slot--filled':''}">${esc(state.bossInput[i]||'・')}</div>`).join('')}</div>
         <div class="boss-controls"><button type="button" class="button button--subtle button--small" data-action="erase" ${!state.bossInput?'disabled':''}>⌫ ひと文字戻す</button><button type="button" class="button button--subtle button--small" data-action="clear" ${!state.bossInput?'disabled':''}>すべて消す</button></div>
         ${kanaTable()}
@@ -230,7 +286,6 @@
       </div></section>`;
   }
   function clearView(){
-    const caption=`『メイクセンス』を${state.round}周目・${state.total}戦でクリア！\n異論を覆しました。\n#メイクセンス`;
     return `<section class="clear-view"><div class="clear-view__top">CONGRATULATIONS</div><div class="clear-view__spark">✳</div><div class="clear-view__overline">MAKE SENSE</div><h1>異論を、<br>覆しました。</h1><p class="clear-view__sub">あなたの答えが、最後の一言になった。</p>
       <div class="clear-view__metrics"><div><strong>${state.round}<small>周目</small></strong><span>CLEAR ROUND</span></div><div><strong>${state.total}<small>戦</small></strong><span>TOTAL BATTLES</span></div></div>
       <div class="clear-view__stats"><span>WIN ${state.wins}</span><span>DRAW ${state.draws}</span><span>LOSE ${state.losses}</span></div>
@@ -238,10 +293,21 @@
       <div class="clear-view__spoiler">SNS投稿には、最後の正解ワードを含めません。</div>
       <button class="clear-view__retry" data-action="reset">最初からプレイする ↺</button></section>`;
   }
+  function hintChoiceView(){
+    return `<section class="hint-view"><div class="hint-view__eyebrow">NEW OPTION UNLOCKED</div>
+      <div class="hint-view__icon">✳</div><h1>ヒントモード解放</h1>
+      <p>ここからは、相手のお題と対戦ログに言葉の数値を表示できます。<br>選択肢の数値と計算方法は表示されません。</p>
+      <div class="hint-view__actions"><button class="button button--primary button--large" data-action="hint-choose" data-enabled="yes">ヒントを使う</button>
+      <button class="button button--subtle" data-action="hint-choose" data-enabled="no">使わずに挑む</button></div>
+      <p class="hint-view__note">後から画面上部で切り替えられます。</p></section>`;
+  }
   function render(){
     const el=$('#app');
-    el.innerHTML=state.phase==='intro'?introView():state.phase==='battle'?battleView():state.phase==='result'?outcomeView(false):state.phase==='boss'?bossView():state.phase==='bossResult'?outcomeView(true):state.phase==='clear'?clearView():introView();
+    el.innerHTML=state.phase==='intro'?introView():state.phase==='battle'?battleView():state.phase==='result'?outcomeView(false):state.phase==='boss'?bossView():state.phase==='bossResult'?outcomeView(true):state.phase==='clear'?clearView():state.phase==='hintChoice'?hintChoiceView():introView();
     $('#log-count').textContent=state.history.length;
+    const hintControl=$('#hint-toggle');
+    if(hintControl){hintControl.hidden=!hintAvailable();hintControl.textContent=state.hintMode?'ヒント ON':'ヒント OFF';hintControl.setAttribute('aria-pressed',String(state.hintMode));}
+    updateClockDisplay();
     document.body.dataset.phase=state.phase;
     window.scrollTo({top:0,behavior:'instant'});
   }
@@ -253,6 +319,7 @@
   }
   function submitBoss(){
     if(state.phase!=='boss'||state.bossInput.length!==3)return;
+    settleClock();if(state.bossRemainingMs<=0){timeOutBoss();return;}
     const chosen=state.bossInput;
     if(!dictionary.has(chosen)){toast('登録されていない言葉です。一般的な三文字の単語を入力してください。');return;}
     const score=area2(chosen);const boss=area2('いろん');
@@ -260,33 +327,42 @@
     const outcome=score>boss?'WIN':score===boss?'DRAW':'LOSE';
     // All registered, ordinary three-kana words that exceed the boss score can clear.
     // The canonical answers are あんこ / あんよ / ほあん; additional valid answers are allowed.
-    record('いろん',chosen,outcome,'BOSS','FINAL');state.phase='bossResult';save();render();
+    record('いろん',chosen,outcome,'BOSS','FINAL');state.phase='bossResult';state.bossClockRate=0;save();render();
   }
   function proceed(){
     if(!state.pending)return;
     const outcome=state.pending.outcome;const boss=state.phase==='bossResult';
     if(boss){
       if(outcome==='WIN'){state.phase='clear';state.cleared=true;}
-      else if(outcome==='DRAW'){state.bossInput='';state.phase='boss';}
-      else {state.round++;state.stage=0;state.currentId=null;state.displayOrderId=null;state.bossInput='';state.phase='battle';}
+      else if(outcome==='DRAW'){state.bossInput='';state.phase='boss';state.pending=null;beginBossClock();render();return;}
+      else {state.round++;state.stage=0;state.currentId=null;state.displayOrderId=null;state.bossInput='';state.bossRemainingMs=null;state.bossClockAt=null;state.bossClockRate=0;state.phase=hintAvailable()&&!state.hintOffered?'hintChoice':'battle';if(state.phase==='hintChoice')state.hintOffered=true;}
     }else if(outcome==='WIN'){
       state.stage++;
       state.currentId=null;state.displayOrderId=null;
-      state.phase=state.stage>=4?'boss':'battle';
+      state.phase=state.stage>=4?'boss':'battle';if(state.phase==='boss'){state.bossRemainingMs=null;beginBossClock();}
     }else{
       const genre=GENRES[state.stage];const previous=state.currentId;state.currentId=null;state.displayOrderId=null;
       chooseQuestion(genre,previous);state.phase='battle';
     }
     state.pending=null;save();render();
   }
-  function openModal(id){const modal=$(id);if(modal&&typeof modal.showModal==='function'&&!modal.open)modal.showModal();}
+  function openModal(id){
+    const modal=$(id);if(!modal||typeof modal.showModal!=='function'||modal.open)return;
+    if(id==='#log-dialog'&&clockActive()&&(state.phase==='boss'||state.phase==='bossResult'))setClockRate(LOG_CLOCK_RATE);
+    if(state.phase==='bossResult'&&state.pending?.id==='FINAL-TIMEOUT')return;
+    modal.showModal();updateClockDisplay();
+  }
+  function logClosed(){
+    if(clockActive()&&(state.phase==='boss'||state.phase==='bossResult'))setClockRate(state.phase==='boss'?1:0);
+  }
   function renderLog(filter='ALL'){
+    $('#log-timer').innerHTML=clockActive()&&(state.phase==='boss'||state.phase==='bossResult')?`<div class="log-clock"><span>ログ閲覧中 TIME ×0.2</span><strong data-clock>${clockText()}</strong></div>`:'';
     $('#log-summary').innerHTML=`<div><b>${state.total}</b><small>総対戦</small></div><div><b>${state.wins}</b><small>WIN</small></div><div><b>${state.draws}</b><small>DRAW</small></div><div><b>${state.losses}</b><small>LOSE</small></div>`;
     const filters=[['ALL','すべて'],['A','A'],['B','B'],['C','C'],['D','D']];
     if(state.stage>=4||state.history.some(r=>r.genre==='BOSS')||state.cleared)filters.push(['BOSS','異論']);
     $('#log-filters').innerHTML=filters.map(([k,label])=>`<button type="button" data-log-filter="${k}" class="log-filter ${filter===k?'log-filter--active':''}">${label}</button>`).join('');
     const results=state.history.filter(x=>filter==='ALL'||x.genre===filter).slice().reverse();
-    $('#log-list').innerHTML=results.length?results.map(r=>`<div class="log-entry"><span class="log-entry__index">#${String(r.n).padStart(3,'0')} <span>／ ${r.round}周目</span></span><span class="log-entry__words">${esc(r.enemy)} <i>VS</i> ${esc(r.chosen)}</span><span class="log-entry__outcome log-entry__outcome--${r.outcome.toLowerCase()}">${r.outcome}</span><span class="log-entry__genre">${r.genre==='BOSS'?'異論':`GENRE ${r.genre}`}</span></div>`).join(''):`<div class="log-empty">まだ記録はありません。<br>まずは一戦、挑んでみよう。</div>`;
+    $('#log-list').innerHTML=results.length?results.map(r=>`<div class="log-entry"><span class="log-entry__index">#${String(r.n).padStart(3,'0')} <span>／ ${r.round}周目</span></span><span class="log-entry__words">${shownWord(r.enemy)} <i>VS</i> ${shownWord(r.chosen)}</span><span class="log-entry__outcome log-entry__outcome--${r.outcome.toLowerCase()}">${r.outcome}</span><span class="log-entry__genre">${r.genre==='BOSS'?'異論':`GENRE ${r.genre}`}</span></div>`).join(''):`<div class="log-empty">まだ記録はありません。<br>まずは一戦、挑んでみよう。</div>`;
   }
   const shareText = () => `『メイクセンス』を${state.round}周目・${state.total}戦でクリア！\n異論を覆しました。\n#メイク_センス`;
   const liveUrl=()=>/^https?:$/.test(window.location.protocol)&&!['localhost','127.0.0.1'].includes(window.location.hostname)&&!window.location.hostname.endsWith('.test')?window.location.origin+window.location.pathname:'';
@@ -314,21 +390,27 @@
     if(!confirm('現在の進行状況と対戦ログをすべて削除して、最初から始めますか？'))return;
     state=initial();save();render();toast('新しいゲームを始められます。');
   }
-  function goHome(){state.phase='intro';save();render();}
+  function goHome(){if(state.phase==='boss'||state.phase==='bossResult'){toast('最終戦の途中はトップに戻れません。');return;}state.phase='intro';save();render();}
   function start(){
     if(state.cleared){state.phase='clear';}
     else if(state.pending){state.phase=state.pending.genre==='BOSS'?'bossResult':'result';}
-    else if(state.stage>=4)state.phase='boss';
+    else if(state.phase==='hintChoice')return;
+    else if(state.stage>=4){state.phase='boss';if(state.bossRemainingMs===null)beginBossClock();else setClockRate(1);}
     else state.phase='battle';
     save();render();
   }
   document.addEventListener('click',e=>{
     const global=e.target.closest('[data-global]');
-    if(global){const action=global.dataset.global;if(action==='home')goHome();else if(action==='rules')openModal('#rules-dialog');else if(action==='log'){renderLog();openModal('#log-dialog');}else if(action==='reset')reset();return;}
+    if(global){const action=global.dataset.global;
+      if(action==='home')goHome();else if(action==='rules'){if(state.phase==='boss'){toast('最終戦の途中はルール画面を開けません。');return;}openModal('#rules-dialog');}
+      else if(action==='log'){renderLog();openModal('#log-dialog');}
+      else if(action==='hint-toggle'&&hintAvailable()){state.hintMode=!state.hintMode;save();render();if($('#log-dialog').open)renderLog();toast(state.hintMode?'ヒントモード ON':'ヒントモード OFF');}
+      else if(action==='reset')reset();return;}
     const filter=e.target.closest('[data-log-filter]');if(filter){renderLog(filter.dataset.logFilter);return;}
     const actionEl=e.target.closest('[data-action]');if(!actionEl)return;
     const action=actionEl.dataset.action;
-    if(action==='start')start();else if(action==='rules')openModal('#rules-dialog');else if(action==='log'){renderLog();openModal('#log-dialog');}
+    if(action==='hint-choose'&&state.phase==='hintChoice'){state.hintMode=actionEl.dataset.enabled==='yes';state.phase='battle';save();render();}
+    else if(action==='start')start();else if(action==='rules')openModal('#rules-dialog');else if(action==='log'){renderLog();openModal('#log-dialog');}
     else if(action==='answer')answer(actionEl.dataset.choice);else if(action==='continue')proceed();
     else if(action==='kana'&&state.phase==='boss'&&state.bossInput.length<3){state.bossInput+=actionEl.dataset.kana;save();render();}
     else if(action==='erase'&&state.phase==='boss'){state.bossInput=state.bossInput.slice(0,-1);save();render();}
@@ -347,6 +429,8 @@
   document.querySelectorAll('dialog').forEach(dialog=>dialog.addEventListener('click',e=>{
     if(e.target===dialog)dialog.close();
   }));
+  $('#log-dialog').addEventListener('close',logClosed);
+  setInterval(clockTick,100);
   // Manual verification is available to developers in the console without showing the answer in the game UI.
   window.MS_DEV={getStats:()=>({curated:compiled.filter(q=>q.source==='curated').length,autogenerated,extraAccepted,pools:Object.fromEntries(GENRES.map(g=>[g,genrePools[g].length])),invalidQuestions}),score:area2};
   render();
