@@ -1221,7 +1221,7 @@ const printWords=[...dictionary].filter(w=>score(w)<20);
 const printPairs=new Map();for(const w of printWords)for(const p of pair(w)){if(!printPairs.has(p))printPairs.set(p,new Set());printPairs.get(p).add(w);}
 for(const [p,g] of printPairs){if(g.size<4||bank.print.length>=26)continue;const arr=[...g];for(const enemy of shuffle(arr.filter(w=>score(w)>0))){let upper=shuffle(arr.filter(w=>score(w)>score(enemy))),rest=shuffle(arr.filter(w=>w!==enemy&&w!==upper[0]));if(upper.length&&rest.length>=2){bank.print.push({id:'GEN-print-'+p+'-'+enemy,enemy,options:shuffle([upper[0],...rest.slice(0,2)]),place:'print',pair:p});break;}}}
 if(bank.print.length<6){for(const q of baseQuestions.values())if(q.genre==='C'&&q.enemy&&q.win&&q.draw&&q.lose&&valid(q.enemy)&&valid(q.win)&&valid(q.draw)&&valid(q.lose)&&area2(q.win)>area2(q.enemy))bank.print.push({id:'BACKUP-'+q.id,enemy:q.enemy,options:[q.win,q.draw,q.lose],place:'print'});}
-const STORE='makesense-rpg-v1';
+const STORE='makesense-rpg-pixel-v1';
 const defaultState=()=>({version:1,screen:'intro',step:0,question:null,questionIndex:[],first:{},used:{veg:[],fish:[],animal:[],goods:[],print:[]},visited:[],winsBy:{veg:0,fish:0,animal:0,goods:0,print:0},stars:[],questDone:[],discovered:[],examined:[],compared:[],hintLevel:0,bossLosses:0,bossAttempts:0,bossInput:'',bossMs:60000,bossAt:null,bossRate:0,bossResult:null,pending:null,history:[],cleared:false,clearStats:null,notice:null,lastPlace:null,uiPlace:null,total:0,wins:0,draws:0,losses:0});
 let state;
 try{const d=JSON.parse(localStorage.getItem(STORE)||'null');state=d?.version===1?Object.assign(defaultState(),d):defaultState();}catch{state=defaultState();}
