@@ -1,0 +1,1342 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c1220"><meta name="description" content="言葉を集め、世界を巡り、異論を覆せ。探索型Web謎『メイクセンス』。"><title>メイクセンス | MAKE SENSE</title><style>
+@charset "UTF-8";
+:root{color-scheme:dark;--bg:#0b101c;--bg2:#111827;--panel:#161e2e;--panel-soft:#1c273b;--line:#303a4d;--text:#f6f4ee;--muted:#a4afc0;--faint:#79869b;--cream:#f7f2e9;--ink:#151b27;--accent:#d7f37f;--accent-ink:#152217;--win:#b9efb8;--draw:#f1d78e;--lose:#f6ada6;--a:#a2bcff;--b:#9ee4bf;--c:#f6cb86;--d:#cfabf4;--radius:24px;--font:'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo',system-ui,sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{min-height:100vh;margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}button{font:inherit;cursor:pointer}button:disabled{opacity:.43;cursor:not-allowed}a{color:inherit}.ambient{position:fixed;z-index:-1;pointer-events:none;filter:blur(2px);border-radius:50%;opacity:.7}.ambient--left{width:750px;height:750px;top:-380px;left:-270px;background:radial-gradient(circle,#26395669,transparent 64%)}.ambient--right{width:840px;height:840px;bottom:-560px;right:-380px;background:radial-gradient(circle,#35465152,transparent 66%)}.site-shell{width:min(1216px,calc(100% - 64px));margin:0 auto;min-height:100vh;display:flex;flex-direction:column}.site-header{min-height:100px;padding:26px 0 22px;border-bottom:1px solid #ffffff18;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:flex;gap:12px;align-items:center;padding:0;border:0;background:none;color:var(--text);text-align:left}.brand__symbol{width:31px;height:31px;position:relative;display:block}.brand__symbol i{position:absolute;width:21px;height:21px;border:1.8px solid var(--accent);transform:rotate(45deg);border-radius:2px}.brand__symbol i:nth-child(1){top:5px;left:0}.brand__symbol i:nth-child(2){top:0;left:9px;opacity:.78}.brand__symbol i:nth-child(3){top:10px;left:9px;opacity:.52}.brand__word{font-family:Arial,Helvetica,sans-serif;font-weight:900;letter-spacing:-.055em;font-size:19px;line-height:.95}.brand__word>span{color:var(--accent)}.brand__word small{display:block;margin-top:7px;font:700 9px var(--font);letter-spacing:.2em;color:#aebad0}.header-actions{display:flex;align-items:center;gap:9px}.header-button{display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border:1px solid var(--line);border-radius:50px;background:#192235aa;color:#f3f1eb;font-size:12px;font-weight:800;transition:.18s}.header-button:hover{border-color:var(--accent);background:#26354a}.header-button>span:first-child{font-size:17px;line-height:1;color:var(--accent)}.header-button__count{display:grid;place-items:center;min-width:21px;height:21px;padding:0 5px;border-radius:16px;background:#2b374a;color:var(--cream);font:700 11px Arial}#app{flex:1;min-height:580px}.site-footer{margin-top:28px;display:flex;gap:22px;align-items:center;padding:23px 0 28px;border-top:1px solid #ffffff18;color:var(--faint);font-size:10px;letter-spacing:.08em}.site-footer>span:first-child{font:900 11px Arial;letter-spacing:.13em;color:#c2cbd8}.footer-reset{margin-left:auto;border:0;background:none;padding:6px 0;color:#96a3b8;text-decoration:underline;text-underline-offset:4px;font-size:11px}.footer-reset:hover{color:var(--cream)}
+.button{display:inline-flex;align-items:center;justify-content:center;gap:22px;border:1px solid transparent;border-radius:13px;padding:15px 22px;font-weight:800;font-size:13px;line-height:1.4;transition:transform .18s,border-color .18s,background .18s;min-height:49px}.button:not(:disabled):hover{transform:translateY(-2px)}.button--primary{background:var(--accent);color:var(--accent-ink);box-shadow:0 7px 30px #c9ee701e}.button--primary:hover{background:#e4ffa0}.button--primary:disabled{background:#5d6857;color:#202820;box-shadow:none;transform:none}.button--subtle{background:#202a3c;border-color:#354157;color:var(--text)}.button--subtle:hover{border-color:#9eabba;background:#29364b}.button--large{min-width:220px;padding:17px 24px;font-size:14px;min-height:58px}.button--large>span:last-child{font-size:19px}.button--small{padding:9px 13px;min-height:34px;font-size:11px;border-radius:8px}.micro-label{font:800 10px Arial,sans-serif;letter-spacing:.22em;color:#93a3b9}.mobile-only{display:none}
+/* The four mascots are original CSS artwork; no external image assets are required. */
+.avatar{--face:#d0d8f8;--body:#405990;--glow:#6d91ff;--inkface:#24344e;position:relative;display:block;width:155px;height:150px;isolation:isolate}.avatar__halo{position:absolute;left:16px;top:7px;width:125px;height:125px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 73%);opacity:.35;filter:blur(8px);z-index:-1}.avatar__body{position:absolute;left:28px;right:28px;bottom:0;height:67px;border-radius:58px 58px 16px 16px;background:var(--body);border:2px solid #ffffff20;box-shadow:inset -11px -8px 0 #00000022}.avatar__head{position:absolute;left:36px;top:20px;width:83px;height:88px;border-radius:36px 39px 41px 39px;background:var(--face);border:2px solid #ffffff40;box-shadow:inset -10px -7px 0 #00000011,0 6px 17px #00000025}.avatar__eye{position:absolute;top:36px;width:7px;height:10px;background:var(--inkface);border-radius:4px}.avatar__eye--l{left:24px}.avatar__eye--r{right:23px}.avatar__smile{position:absolute;width:14px;height:8px;left:35px;top:48px;border-bottom:2.5px solid var(--inkface);border-radius:0 0 12px 12px}.avatar__sigil{position:absolute;bottom:15px;left:50%;transform:translateX(-50%);font-size:23px;font-weight:900;color:#eaf4ff}.avatar--a{--face:#b9c9ff;--body:#405c9c;--glow:#7b9dff;--inkface:#263658}.avatar--a .avatar__head:before{content:'';position:absolute;left:-10px;top:-17px;width:98px;height:28px;background:#334c80;border:1px solid #a1bdfb55;border-radius:47px 47px 14px 14px;transform:rotate(-6deg)}.avatar--a .avatar__head:after{content:'';position:absolute;width:21px;height:21px;top:31px;right:13px;border:2px solid #456299;border-radius:50%;box-shadow:5px 4px 0 -4px #456299}.avatar--b{--face:#bdf0d1;--body:#387e69;--glow:#70d5a7;--inkface:#215247}.avatar--b .avatar__head{border-radius:43% 43% 47% 47%}.avatar--b .avatar__head:before,.avatar--b .avatar__head:after{content:'';position:absolute;width:28px;height:38px;top:-15px;background:#79c7a4;border:2px solid #ffffff2c;border-radius:7px 29px 4px 6px}.avatar--b .avatar__head:before{left:1px;transform:rotate(-20deg)}.avatar--b .avatar__head:after{right:1px;transform:rotate(20deg) scaleX(-1)}.avatar--c{--face:#f6dcad;--body:#a16c3b;--glow:#eab56d;--inkface:#76502b}.avatar--c .avatar__head{border-radius:19px;transform:rotate(-5deg)}.avatar--c .avatar__head:before{content:'ＡＢ';position:absolute;font:900 13px Arial;color:#a47536;top:-20px;left:25px;letter-spacing:-.1em}.avatar--d{--face:#dfc6f2;--body:#745198;--glow:#bf8fe4;--inkface:#59436a}.avatar--d .avatar__head{border-radius:52% 42% 54% 47%;transform:rotate(8deg)}.avatar--d .avatar__head:before{content:'✦';position:absolute;right:-19px;top:-14px;font-size:30px;color:#ddbcf4}.avatar--d .avatar__head:after{content:'✧';position:absolute;left:-21px;bottom:0;font-size:23px;color:#dcadf6}
+/* Home */
+.intro{padding:54px 0 0;max-width:1150px;margin:0 auto}.intro__eyebrow{display:flex;gap:10px;align-items:center;font:800 11px Arial;letter-spacing:.27em;color:var(--accent)}.pulse-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;box-shadow:0 0 14px var(--accent)}.intro__title{margin:22px 0 0;font:900 clamp(72px,11vw,152px)/.81 Arial,Helvetica,sans-serif;letter-spacing:-.091em}.intro__title em{font-style:normal;color:var(--accent)}.intro__title em span{color:var(--text)}.intro__japanese{margin:21px 0 0;font-size:12px;letter-spacing:.46em;font-weight:700;color:var(--muted)}.intro__lead{font-size:clamp(23px,3.4vw,34px);font-weight:900;line-height:1.45;letter-spacing:.025em;margin:32px 0 10px}.intro__copy{font-size:13px;color:#b3c0ce;line-height:2.05;margin:0 0 27px}.intro__actions{display:flex;gap:11px;flex-wrap:wrap}.intro__hint{margin-top:16px;color:#7d8da1;font-size:11px}.intro__cast-title{display:flex;gap:14px;align-items:baseline;margin:66px 0 16px;font:800 12px Arial;letter-spacing:.18em}.intro__cast-title span+span{font:700 11px var(--font);letter-spacing:.05em;color:var(--faint)}.cast-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.cast-card{position:relative;min-height:292px;overflow:hidden;display:flex;flex-direction:column;align-items:center;text-align:center;border:1px solid #ffffff1c;border-radius:20px;padding:14px 9px 19px;background:linear-gradient(150deg,#223252c4,#17203388)}.cast-card--b{background:linear-gradient(150deg,#233d38bb,#162b2ba0)}.cast-card--c{background:linear-gradient(150deg,#463a2db8,#2b2924a0)}.cast-card--d{background:linear-gradient(150deg,#372e49c7,#29243aad)}.cast-card .avatar{transform:scale(.82);height:130px;transform-origin:center top}.cast-card__code{font:900 9px Arial;letter-spacing:.25em;color:#bdcde2;margin:5px 0 9px}.cast-card h3{margin:0;font-size:21px;letter-spacing:.07em}.cast-card p{font-size:11px;color:#ccd7dd;margin:7px 0 11px}.cast-card>span:last-child{margin-top:auto;color:#99a6b5;font-size:10px}.intro__bottom{text-align:center;color:#8799ab;margin:28px 0;font-size:11px;letter-spacing:.07em}
+/* Battle */
+.game-view{padding:31px 0 0;--genre:var(--a)}.game-view--b{--genre:var(--b)}.game-view--c{--genre:var(--c)}.game-view--d{--genre:var(--d)}.game-topline{display:flex;align-items:center;justify-content:space-between;margin:0 0 24px}.breadcrumb{font:900 11px Arial;letter-spacing:.22em;color:#b7c4d7}.breadcrumb span{padding:0 9px;color:#6b7890}.status-figures{display:inline-flex;gap:12px;align-items:center;font:900 19px Arial;letter-spacing:-.03em}.status-figures>span{display:flex;align-items:baseline;gap:3px}.status-figures small{font:700 11px var(--font);color:#9faebe}.status-figures i{height:16px;width:1px;background:#506078;transform:rotate(18deg)}.stage-track{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:18px}.stage-step{border:1px solid #3d4a5e;background:#182232;border-radius:12px;padding:12px 13px;display:flex;align-items:center;gap:9px;color:#75859b}.stage-step__number{height:25px;width:25px;display:grid;place-items:center;border:1px solid currentColor;border-radius:7px;font:800 11px Arial}.stage-step__name{font-size:11px;font-weight:800;white-space:nowrap}.stage-step--current{border-color:var(--genre);color:var(--genre);background:color-mix(in srgb,var(--genre) 9%,#182232)}.stage-step--done{border-color:#4b745a;color:#ade4b6;background:#1a2d29}.battle-grid{display:grid;grid-template-columns:minmax(290px,.88fr) minmax(380px,1.12fr);gap:17px;min-height:560px}.enemy-panel{position:relative;overflow:hidden;display:flex;align-items:center;flex-direction:column;text-align:center;min-height:560px;padding:24px;border-radius:var(--radius);border:1px solid #ffffff23;background:radial-gradient(circle at 50% 31%,color-mix(in srgb,var(--genre) 18%,transparent),transparent 48%),linear-gradient(155deg,#24334a,#151e2d 75%)}.enemy-panel:before{content:'';position:absolute;width:360px;height:360px;border-radius:50%;border:1px solid #ffffff12;top:58px;pointer-events:none}.enemy-panel:after{content:'';position:absolute;width:430px;height:430px;border-radius:50%;border:1px solid #ffffff0b;top:23px;pointer-events:none}.enemy-panel__mark{position:relative;z-index:1;align-self:flex-start;font:800 10px Arial;letter-spacing:.2em;color:#a7b3c5}.enemy-panel__mark b{background:var(--genre);color:#111927;padding:4px 8px;border-radius:6px;margin-left:6px}.enemy-panel .avatar{transform:scale(1.5);transform-origin:center center;margin:90px 0 55px;z-index:1}.enemy-panel__role{z-index:1;font-size:11px;font-weight:700;color:var(--genre);letter-spacing:.1em;margin:0 0 10px}.enemy-panel h1{z-index:1;font-size:35px;margin:0;letter-spacing:.09em}.enemy-panel__line{z-index:1;font-size:12px;color:#c7d2df;margin:17px 0 24px}.enemy-panel__footer{z-index:1;margin:auto 0 0;border-top:1px solid #ffffff23;align-self:stretch;padding-top:18px;font-size:11px;color:#91a2ba}.challenge-panel{padding:27px 36px 30px;border:1px solid #ffffff1e;border-radius:var(--radius);background:linear-gradient(160deg,#172237,#131c2a);box-shadow:0 15px 50px #00000021}.challenge-panel__top{display:flex;align-items:center;justify-content:space-between;gap:10px}.challenge-panel__seq{font-size:10px;color:#8d9cb1;font-weight:700}.challenge-panel__dot{padding:0 6px}.challenge-panel__prompt{margin:54px 0 23px;color:#c5d0dc;font-size:14px}.challenge-panel__prompt span{color:var(--accent);font-weight:900}.enemy-word{display:flex;gap:12px;justify-content:center;align-items:center;padding:26px 0 45px}.enemy-word span{font-size:clamp(34px,5vw,55px);font-weight:900;line-height:1.15;letter-spacing:.05em;text-shadow:0 1px 0 #ffffff25}.choice-list{display:grid;gap:10px}.choice{width:100%;padding:14px 18px;display:flex;align-items:center;border:1px solid #46536b;border-radius:13px;background:#202b3d;color:var(--cream);min-height:66px;text-align:left;transition:.16s}.choice:hover{border-color:var(--accent);background:#2c3b50;transform:translateX(3px)}.choice:focus-visible,.button:focus-visible,.kana-button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}.choice__index{font:800 11px Arial;letter-spacing:.06em;color:#95a6be}.choice__word{margin-left:23px;font-size:19px;letter-spacing:.16em;font-weight:900}.choice__arrow{margin-left:auto;color:#b5c2d1;font-size:20px}.challenge-panel__foot{font-size:10px;line-height:1.9;color:#7f90a9;margin:20px 0 0}
+/* Outcome */
+.outcome-view{min-height:600px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:54px 18px 40px}.outcome-view__top{font:900 10px Arial;letter-spacing:.26em;color:#99abc3}.outcome-view__seal{display:grid;place-items:center;font-size:50px;width:100px;height:100px;border:1px solid #b9efb888;background:#b9efb816;border-radius:50%;color:var(--win);margin:25px 0 12px}.outcome-view--draw .outcome-view__seal{border-color:#f1d78e88;background:#f1d78e18;color:var(--draw)}.outcome-view--lose .outcome-view__seal{border-color:#f6ada688;background:#f6ada618;color:var(--lose)}.outcome-view__status{font:900 13px Arial;letter-spacing:.3em;color:var(--win)}.outcome-view--draw .outcome-view__status{color:var(--draw)}.outcome-view--lose .outcome-view__status{color:var(--lose)}.outcome-view h1{font-size:clamp(26px,5vw,45px);margin:10px 0 7px;letter-spacing:.025em}.outcome-view__desc{font-size:13px;color:#a9b7c7;line-height:1.8;margin:0}.outcome-compare{display:flex;gap:35px;align-items:center;justify-content:center;margin:34px 0 30px;border:1px solid #ffffff2a;border-radius:18px;padding:20px 37px;background:#172131}.outcome-compare>div{min-width:125px;display:flex;flex-direction:column;gap:12px}.outcome-compare small{font-size:10px;color:#a5b5ca}.outcome-compare strong{font-size:26px;letter-spacing:.15em}.outcome-compare__versus{font:900 11px Arial;color:#6c7d93}.outcome-view__actions{display:flex;align-items:center;justify-content:center;gap:11px;flex-wrap:wrap}.outcome-view__foot{margin:26px 0 0;color:#b5c2d1}
+/* Final */
+.boss-view{padding:25px 0 48px;max-width:920px;margin:0 auto}.boss-view__mark{display:flex;align-items:center;justify-content:space-between;font:800 10px Arial;letter-spacing:.21em;color:#c5b0e1}.boss-view__orb{height:145px;width:145px;display:flex;gap:4px;align-items:center;justify-content:center;margin:21px auto 7px;border-radius:50%;background:radial-gradient(circle at 34% 24%,#d2a7fc52,#63427d52 47%,#241d3b 77%);border:2px solid #9b7abc6b;box-shadow:0 0 80px #986bb44a,0 0 0 13px #855e9b11,0 0 0 28px #855e9b08;transform:rotate(-8deg)}.boss-view__orb span{font-size:38px;font-weight:900;color:#f4e8fb}.boss-view__center{display:flex;align-items:center;flex-direction:column;text-align:center}.boss-view__center>.micro-label{color:#c7a2ef;margin:19px 0 0}.boss-view h1{font-size:clamp(28px,4.5vw,42px);margin:9px 0 8px}.boss-view__center>p{font-size:12px;color:#bcc5d7;line-height:1.9;margin:2px 0 14px}.boss-word-label{margin:8px 0 10px;font:800 10px Arial;letter-spacing:.19em;color:#d0b4eb}.boss-slots{display:flex;gap:11px}.boss-slot{height:62px;width:62px;display:grid;place-items:center;background:#172033;border:1px solid #644d7b;border-radius:12px;font-size:31px;color:#687387;font-weight:900}.boss-slot--filled{background:#322743;border-color:#b28bda;color:#f5eafd}.boss-controls{display:flex;gap:10px;margin:12px 0 16px}.kana-board{width:min(560px,100%);display:grid;gap:5px;border-radius:20px;padding:12px;background:#141c2a;border:1px solid #ffffff1b}.kana-row{display:grid;grid-template-columns:42px repeat(5,minmax(0,1fr));gap:5px}.kana-row__label{align-self:center;font-size:10px;color:#8493a9;text-align:center}.kana-button,.kana-blank{height:37px;display:grid;place-items:center;border:1px solid #42445d;border-radius:7px;font-weight:800;font-size:17px}.kana-button{background:#283047;color:#f0e6fc;transition:.14s}.kana-button:not(:disabled):hover{border-color:#d3a7ff;background:#413652;transform:translateY(-1px)}.kana-blank{opacity:.25;border-color:#333b4d;background:#1b2432}.boss-submit{margin:15px 0 0;width:min(560px,100%)}.boss-view .boss-view__hint{font-size:10px;color:#93a2b7;margin:13px 0 0}
+/* Clear */
+.clear-view{display:flex;flex-direction:column;align-items:center;text-align:center;padding:52px 12px 30px;max-width:760px;margin:0 auto}.clear-view__top{font:900 10px Arial;letter-spacing:.27em;color:var(--accent)}.clear-view__spark{display:grid;place-items:center;width:100px;height:100px;margin:30px 0;background:#d7f37f16;border:1px solid #d7f37f55;color:var(--accent);border-radius:50%;font-size:63px;box-shadow:0 0 80px #d7f37f1b}.clear-view__overline{font:900 13px Arial;letter-spacing:.25em;color:var(--accent)}.clear-view h1{margin:15px 0 12px;font-size:clamp(38px,6vw,68px);letter-spacing:.08em;line-height:1.4}.clear-view__sub{font-size:13px;color:#abbacb}.clear-view__metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;width:min(520px,100%);margin:26px 0 17px}.clear-view__metrics>div{display:flex;align-items:center;flex-direction:column;gap:9px;padding:21px 12px;border:1px solid #ffffff2b;border-radius:17px;background:#1a2635}.clear-view__metrics strong{font:900 41px Arial;letter-spacing:-.06em}.clear-view__metrics strong small{font:800 14px var(--font);letter-spacing:0;margin-left:4px}.clear-view__metrics span{font:800 9px Arial;letter-spacing:.17em;color:#91a1b4}.clear-view__stats{display:flex;gap:20px;font:800 11px Arial;color:#b5c4d4}.clear-view__actions{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:32px}.clear-view__spoiler{color:#8190a5;font-size:10px;margin-top:16px}.clear-view__retry{margin-top:39px;border:0;border-bottom:1px solid #8597ad;background:none;color:#9fb2c9;font-size:12px;padding:0 2px 6px}.clear-view__retry:hover{color:var(--cream)}
+/* Dialogs + log */
+.modal{width:min(560px,calc(100vw - 28px));max-height:min(84vh,830px);padding:31px;border:1px solid #4a5366;border-radius:22px;background:#172234;color:var(--text);box-shadow:0 30px 100px #000b;overflow:auto}.modal::backdrop{background:#030712c9;backdrop-filter:blur(5px)}.modal>form:first-child{position:absolute;right:15px;top:15px}.modal-close{width:32px;height:32px;border:1px solid #44526a;color:#dde8f4;background:#2a3448;border-radius:50%;font-size:23px;line-height:1}.modal-label{font:900 10px Arial;letter-spacing:.25em;color:var(--accent);margin-bottom:10px}.modal h2{margin:0 0 20px;font-size:23px;letter-spacing:.03em}.rule-list{margin:0;padding:0 0 0 22px;display:grid;gap:21px}.rule-list li{padding-left:9px;color:var(--accent);font-weight:800}.rule-list b{display:block;color:var(--text);font-size:14px}.rule-list li span{display:block;margin-top:5px;font-size:12px;color:#b7c3d3;line-height:1.8;font-weight:400}.modal-note{margin:24px 0 18px;padding:13px;border:1px solid #45566a;background:#253346;border-radius:9px;color:#bdc9d8;font-size:11px;line-height:1.9}.modal-ok{width:100%}.modal--log{width:min(680px,calc(100vw - 28px));min-height:300px}.log-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:19px 0}.log-summary>div{display:flex;flex-direction:column;align-items:center;background:#233147;border-radius:10px;padding:14px 7px;gap:6px}.log-summary b{font:900 24px Arial}.log-summary small{font-size:10px;color:#a3b6c8}.log-filters{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px}.log-filter{border:1px solid #49546a;border-radius:50px;background:#263349;color:#aebed0;padding:7px 11px;font-size:10px;font-weight:800}.log-filter--active{border-color:var(--accent);background:var(--accent);color:#172218}.log-list{display:grid;gap:7px}.log-entry{display:grid;grid-template-columns:105px minmax(0,1fr) 52px;align-items:center;gap:6px 11px;padding:11px 12px;background:#202d41;border:1px solid #3b4a61;border-radius:9px}.log-entry__index{font:800 10px Arial;color:#91a4bc}.log-entry__index>span{font:700 10px var(--font)}.log-entry__words{font-size:14px;font-weight:900;white-space:nowrap;letter-spacing:.035em}.log-entry__words i{font:800 9px Arial;color:#8398ad;padding:0 6px}.log-entry__outcome{font:900 10px Arial;letter-spacing:.03em;text-align:right}.log-entry__outcome--win{color:var(--win)}.log-entry__outcome--draw{color:var(--draw)}.log-entry__outcome--lose{color:var(--lose)}.log-entry__genre{grid-column:2;grid-row:2;color:#8497ac;font:800 9px Arial;letter-spacing:.13em}.log-empty{text-align:center;padding:45px 10px;color:#9eb0c3;font-size:12px;line-height:2}.toast{position:fixed;z-index:9999;left:50%;bottom:35px;transform:translate(-50%,15px);opacity:0;pointer-events:none;max-width:min(540px,calc(100vw - 40px));padding:13px 21px;border:1px solid #627a6b;border-radius:12px;background:#d7f37f;color:#243018;font-size:12px;font-weight:800;box-shadow:0 20px 80px #0008;transition:opacity .2s,transform .2s}.toast--show{opacity:1;transform:translate(-50%,0)}.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:490px;text-align:center;padding:30px}.empty-state h1{font-size:23px}.empty-state p{color:#9baec3;font-size:12px;line-height:1.9}
+@media(max-width:920px){.site-shell{width:calc(100% - 34px)}.battle-grid{grid-template-columns:minmax(240px,.8fr) minmax(300px,1.2fr)}.challenge-panel{padding:22px}.enemy-panel .avatar{transform:scale(1.2);margin:70px 0 46px}.enemy-panel{min-height:520px}.enemy-panel:before{width:280px;height:280px}.enemy-panel:after{width:330px;height:330px}.cast-card{min-height:272px}}
+@media(max-width:680px){.site-shell{width:calc(100% - 28px)}.site-header{min-height:73px;padding:14px 0}.brand__word{font-size:16px}.brand__symbol{transform:scale(.82);transform-origin:left center;width:28px}.header-actions{gap:6px}.header-button{padding:10px 11px}.header-button__label{display:none}.intro{padding:48px 0 0}.intro__title{font-size:clamp(67px,15vw,114px)}.intro__lead{margin-top:28px}.intro__copy{font-size:12px}.intro__cast-title{margin-top:46px}.cast-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.cast-card{min-height:235px;padding:6px 8px 16px}.cast-card .avatar{transform:scale(.67);height:110px}.cast-card h3{font-size:17px}.cast-card p{font-size:10px}.cast-card>span:last-child{font-size:9px}.game-view{padding-top:19px}.game-topline{margin-bottom:17px}.breadcrumb{font-size:9px}.stage-track{gap:5px;margin-bottom:12px}.stage-step{padding:8px 5px;flex-direction:column;gap:5px;border-radius:8px}.stage-step__number{width:24px;height:24px}.stage-step__name{font-size:9px}.battle-grid{grid-template-columns:1fr;gap:11px}.enemy-panel{min-height:171px;padding:12px 18px;display:grid;grid-template-columns:105px minmax(0,1fr);grid-template-rows:19px 16px 40px 25px 22px;align-items:center;text-align:left;gap:2px 7px}.enemy-panel:before,.enemy-panel:after{display:none}.enemy-panel__mark{grid-column:1/-1;grid-row:1;font-size:9px}.enemy-panel .avatar{grid-column:1;grid-row:2/6;transform:scale(.72);transform-origin:top left;margin:0;width:155px;height:150px}.enemy-panel__role{grid-column:2;grid-row:2;align-self:end;margin:0;font-size:10px}.enemy-panel h1{grid-column:2;grid-row:3;font-size:27px}.enemy-panel__line{grid-column:2;grid-row:4;font-size:10px;margin:0}.enemy-panel__footer{grid-column:2;grid-row:5;align-self:center;padding:0;margin:0;border:0;font-size:9px}.challenge-panel{padding:20px 20px 23px}.challenge-panel__prompt{margin:23px 0 13px;font-size:12px}.enemy-word{padding:12px 0 25px}.enemy-word span{font-size:43px}.choice{min-height:56px;padding:10px 15px}.choice__word{font-size:17px;margin-left:16px}.challenge-panel__foot{margin-top:12px}.site-footer{flex-wrap:wrap;gap:7px 14px}.site-footer>span:nth-child(2){display:none}.site-footer .footer-reset{margin-left:auto}.outcome-view{min-height:600px;padding-top:36px}.outcome-compare{padding:20px 12px;gap:7px;width:100%}.outcome-compare>div{min-width:0;flex:1}.outcome-compare strong{font-size:21px}.outcome-view__actions{width:100%}.outcome-view__actions .button--large{width:100%}.boss-view{padding-top:17px}.boss-view__orb{height:115px;width:115px;margin:23px auto 10px}.boss-view__orb span{font-size:30px}.boss-view h1{margin-top:5px}.boss-view__center>p{font-size:11px}.boss-slot{height:54px;width:54px;font-size:27px}.kana-board{padding:8px;gap:4px}.kana-row{grid-template-columns:30px repeat(5,minmax(0,1fr));gap:4px}.kana-button,.kana-blank{height:38px;font-size:16px}.kana-row__label{font-size:9px}.clear-view__actions{flex-direction:column;width:100%}.clear-view__actions .button{width:100%}.modal{padding:25px 19px}.log-entry{grid-template-columns:74px minmax(0,1fr) 47px;padding:10px 8px;gap:5px}.log-entry__words{font-size:12px}.log-entry__words i{padding:0 3px}.log-entry__index{font-size:9px}.mobile-only{display:block}}
+@media(max-width:380px){.intro__title{font-size:65px}.button--large{min-width:unset}.intro__actions .button{width:100%}.enemy-panel{grid-template-columns:93px minmax(0,1fr)}.enemy-panel .avatar{transform:scale(.64)}.enemy-panel h1{font-size:24px}.challenge-panel__top .challenge-panel__seq{font-size:8px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition-duration:.001ms!important;animation-duration:.001ms!important}html{scroll-behavior:auto}}
+
+/* Landscape gojuon chart: a-column on the far right, consonant columns right-to-left. */
+.kana-board{width:min(710px,100%);gap:0}
+.kana-grid{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:5px}
+.kana-grid .kana-button,.kana-grid .kana-blank{width:100%;height:auto;min-height:40px;aspect-ratio:1/1}
+@media(max-width:680px){.kana-board{padding:7px}.kana-grid{gap:3px}.kana-grid .kana-button,.kana-grid .kana-blank{min-height:0;aspect-ratio:1/1;font-size:clamp(12px,3.9vw,17px);border-radius:5px}}
+
+/* Timed final challenge and optional fifth-round hints. */
+[hidden]{display:none!important}
+.word-score{font-size:.55em;color:#d8e78e;white-space:nowrap;vertical-align:middle;font-weight:800;letter-spacing:0}
+.enemy-word .word-score{align-self:center;display:inline-block;margin:0 0 0 10px}
+.log-entry__words .word-score{font-size:.76em;color:#d8e78e}
+.outcome-compare .word-score{font-size:.58em;color:#d8e78e}
+.header-button--hint{white-space:nowrap;border-color:#758553;color:#dfedaa;font-size:11px;font-weight:850}
+.header-button--hint[aria-pressed="true"]{border-color:#d6f485;background:#344129;color:#e8ffb7}
+.boss-clock{display:flex;align-items:center;justify-content:center;gap:16px;border:1px solid #775a96;border-radius:14px;background:#251f37;padding:10px 24px;margin:10px 0 14px;width:min(390px,100%)}
+.boss-clock small{font-size:11px;color:#cbb4df}.boss-clock strong{font:900 31px Arial,Helvetica,sans-serif;font-variant-numeric:tabular-nums;color:#e9d4ff;min-width:116px}
+.boss-clock--result{width:min(400px,100%);margin:-10px auto 24px}
+.clock--urgent{color:#ff8e9b!important;animation:clockPulse .7s infinite alternate}
+@keyframes clockPulse{from{opacity:1}to{opacity:.64}}
+.log-clock{display:flex;justify-content:space-between;align-items:center;gap:16px;background:#322844;border:1px solid #8e72a5;border-radius:12px;padding:13px;margin:10px 0 18px;color:#e8d5ff;font-size:11px;font-weight:850}
+.log-clock strong{font:900 23px Arial;font-variant-numeric:tabular-nums}
+.hint-view{min-height:65vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;max-width:620px;margin:0 auto;padding:35px 10px}
+.hint-view__eyebrow{font:800 11px Arial;letter-spacing:.2em;color:#d5eda3}.hint-view__icon{font-size:70px;color:#d5eda3;margin:18px}.hint-view h1{font-size:clamp(27px,6vw,43px);margin:0 0 16px}.hint-view p{font-size:13px;color:#b8c7d6;line-height:2}.hint-view__actions{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:22px 0 0}.hint-view__note{font-size:11px!important;color:#849bb0!important}
+@media(max-width:680px){.header-button--hint{font-size:10px;padding:8px}.boss-clock strong{font-size:27px}.hint-view__actions{width:100%}.hint-view__actions .button{width:100%}.log-clock{flex-direction:column;gap:4px}.enemy-word .word-score{font-size:17px}}
+.boss-scoreline{text-align:center;margin:-2px 0 12px;font-weight:800;color:#deefaf}.boss-scoreline .word-score{font-size:1em}
+
+/* RPG layer: inherits the visual language from the original MAKE SENSE. */
+[hidden]{display:none!important}.site-shell{max-width:1216px}.header-actions{flex-wrap:wrap;justify-content:flex-end}#app{min-height:620px}.word-score{font-size:.64em;color:#daec93;font-weight:800;white-space:nowrap}.enemy-word .word-score{font-size:19px}.rpg-page{padding:40px 0 50px}.rpg-page.narrow{max-width:780px;margin:0 auto}.rpg-page h1{font-size:clamp(30px,5vw,51px);letter-spacing:-.025em;line-height:1.35;margin:13px 0 17px}.rpg-page>p,.panel>p,.place-hero p{font-size:13px;line-height:2;color:#aebdd0}.rpg-heading{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:25px}.rpg-heading h1{margin:11px 0}.rpg-heading p{font-size:12px;line-height:1.9;color:#9fb0c5}.rpg-mini-stats{min-width:105px;text-align:center;border:1px solid #44546c;border-radius:14px;background:#1a2537;padding:15px}.rpg-mini-stats strong{font:900 25px Arial;color:#e8d693}.rpg-mini-stats span{display:block;color:#94a7c2;font-size:10px;margin-top:5px}.location-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.location-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;min-height:171px;padding:17px 10px;border:1px solid #43526b;border-radius:19px;color:#f5f4ee;background:radial-gradient(circle at 50% 0,#3449677e,transparent 80%),#182235;transition:transform .17s,border-color .17s}.location-card:hover{transform:translateY(-3px);border-color:#d7f37f}.location-icon{font-size:35px;font-weight:900;color:#d7f37f}.location-title{font-size:20px;font-weight:900}.location-meta{font-size:11px;color:#9daec5}.location-card--locked{opacity:.65}.rpg-primary-action{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:30px 0 14px}.rpg-footnote{font-size:11px!important;color:#889bb4!important;line-height:1.9}.story-page{max-width:660px;margin:65px auto 30px;padding:10px 0 40px}.story-page h1{font-size:clamp(35px,5vw,56px);line-height:1.3;margin:26px 0}.story-page p{line-height:2.3;font-size:15px;color:#bbc6d6;margin:0 0 23px}.story-page .story-strong{font-weight:900;color:#f0f5df;font-size:18px;margin:31px 0}.story-page .button{margin-top:17px}.rpg-sigil{display:grid;place-items:center;width:145px;height:145px;margin:95px 0 42px;border-radius:50%;font:900 69px Arial;color:#e9f7cf;background:radial-gradient(circle at 36% 24%,#8baf82a1,#273b48 70%);box-shadow:0 0 90px #a3ce722b,0 0 0 16px #bcd68b0a;border:1px solid #a0bc8a58;z-index:1}.panel{border:1px solid #3c4c65;background:linear-gradient(150deg,#1b283b,#131d2d);padding:25px;border-radius:19px;margin:18px 0}.panel h3{font-size:18px;margin:0 0 9px}.panel-top{display:flex;justify-content:space-between;gap:10px;align-items:center}.panel-top span{font-weight:800;font-size:11px;color:#d7ef9a}.panel .button{margin-top:10px}.win-track{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:20px 0 12px}.win-track i{height:9px;background:#354256;border-radius:6px}.win-track .lit{background:#e2c47b}.place-hero{display:flex;align-items:center;gap:22px;margin:25px 0}.place-icon{width:107px;height:107px;flex:none;display:grid;place-items:center;border-radius:26px;border:1px solid #75886774;background:#2f3d3d;color:#d7ed9d;font-size:49px}.place-hero h1{margin:0;font-size:38px}.place-hero h2{font-size:15px;color:#cbd5e1;margin:4px 0}.place-hero p{margin:2px 0}.rpg-under{display:flex;justify-content:flex-end;margin-top:16px}.word-pair{display:flex;gap:10px;align-items:center;margin:20px 0}.word-pair select,.full-select,.hint-actions select{min-width:0;flex:1;max-width:100%;width:100%;padding:14px 12px;border:1px solid #4c5970;border-radius:10px;background:#263348;color:#f5f4ee;font:800 13px var(--font)}.word-pair span{font:900 11px Arial;color:#91a0b4}.lab-result{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:18px;margin-top:16px;border:1px solid #b2c87b;background:#34432b7a;border-radius:13px}.lab-result strong{font:900 20px Arial;color:#d5f18e}.lab-result span{font-size:14px}.select-label{display:block;margin:18px 0 9px;font-size:12px;font-weight:800}.quest-success{margin:19px 0;color:#d7f37f;font-size:14px;font-weight:900}.star-earned{color:#f3d38e;font-size:15px;font-weight:900}.kana-board{width:min(730px,100%);margin:15px auto}.kana-grid{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:4px}.kana-reference{display:grid;place-items:center;aspect-ratio:1;border:1px solid #465269;border-radius:7px;background:#283447;font-weight:900}.kana-lit{color:#172218!important;background:#d7f37f!important;border-color:#d7f37f!important;box-shadow:0 0 13px #d7f37f72}.boss-view .kana-button{aspect-ratio:1;height:auto}.boss-view .kana-blank{aspect-ratio:1;height:auto}.timer-inline{font-size:12px;color:#ccbfe1}.timer-inline strong{font:900 25px Arial;color:#e9d4ff}.clock--urgent{color:#fb9ca0!important;animation:clockPulse .6s infinite alternate}.search-input{width:100%;padding:13px;border:1px solid #53607a;border-radius:11px;background:#182539;color:#f5f4ee;font:13px var(--font);margin:13px 0}.word-collection{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:15px 0 18px;max-height:48vh;overflow:auto}.word-collection>span{display:flex;align-items:center;justify-content:center;text-align:center;min-height:45px;background:#263449;border:1px solid #3f4d65;border-radius:9px;font-size:12px;font-weight:800}.overlay-desc{font-size:12px;color:#b1c0d2;line-height:1.9}.hint-panel{margin:20px 0 0}.hint-actions{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}.hint-actions span{font-size:12px;color:#b3c5d3}.hint-actions select{max-width:190px}.rules-prose{font-size:13px;line-height:2;color:#bac9d8}.share-preview{background:#1b2a3d;border:1px solid #4a5c73;border-radius:15px;padding:23px 28px;text-align:left;font-size:13px;line-height:2;width:min(560px,100%);margin:15px 0}.site-footer{margin-top:auto}.outcome-view .kana-board{margin:25px auto}.modal--log{max-height:min(90vh,960px);overflow:auto}.modal .modal-close{float:right}.intro__lead{line-height:1.55}.intro__copy{max-width:580px}.rpg-page .button{gap:10px}
+@media(max-width:680px){.site-shell{width:calc(100% - 28px)}.rpg-page{padding:26px 0 30px}.rpg-heading{align-items:flex-start}.rpg-mini-stats{min-width:85px}.location-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.location-card{min-height:142px;border-radius:14px;padding:12px 6px;gap:9px}.location-title{font-size:17px}.location-icon{font-size:30px}.location-meta{font-size:10px}.rpg-sigil{width:95px;height:95px;font-size:43px;margin:15px 0;grid-column:1;grid-row:2/6;align-self:center}.place-icon{width:78px;height:78px;font-size:33px;border-radius:20px}.place-hero{gap:12px}.place-hero h1{font-size:29px}.place-hero h2{font-size:13px}.panel{padding:18px}.word-collection{grid-template-columns:repeat(3,minmax(0,1fr))}.word-pair{gap:5px}.word-pair select{padding:12px 6px;font-size:12px}.kana-grid{gap:2px}.kana-reference{font-size:clamp(11px,3.4vw,15px);border-radius:4px}.site-header .header-button{padding:9px 10px;font-size:11px}.header-actions{gap:5px}.site-header .header-button__count{font-size:9px}.story-page{margin:32px auto}.story-page p{font-size:13px}.story-page .story-strong{font-size:15px}.lab-result{flex-direction:column;align-items:flex-start}}
+
+</style></head><body><div class="ambient ambient--left" aria-hidden="true"></div><div class="ambient ambient--right" aria-hidden="true"></div><div class="site-shell"><header class="site-header"><button class="brand" data-global="home" aria-label="トップ画面へ"><span class="brand__symbol" aria-hidden="true"><i></i><i></i><i></i></span><span class="brand__word">MAKE<span>SENSE</span><small>メイクセンス</small></span></button><nav class="header-actions"><button class="header-button" data-global="book">図鑑 <span class="header-button__count" id="book-count">0</span></button><button class="header-button" data-global="log">▤ <span class="header-button__count" id="log-count">0</span></button><button class="header-button" data-global="rules">?</button></nav></header><main id="app" tabindex="-1"></main><footer class="site-footer"><span>MAKE SENSE</span><span>3文字の言葉で、異論を覆せ。</span><button class="footer-reset" data-global="reset">最初からやり直す</button></footer></div><dialog id="overlay" class="modal modal--log" aria-labelledby="overlay-title"><button class="modal-close" data-global="close" aria-label="閉じる">×</button><div id="overlay-body"></div></dialog><div class="toast" id="toast" role="status" aria-live="polite"></div><script>
+/* メイクセンス：手動問題データ。
+   問題を追加する場合は、末尾に { id, genre, enemy, win, draw, lose, family, note } を追加してください。
+   面積と勝敗は読み込み時に自動検証されます。不正な問題は出題されません。
+   Aのミスリードは自動生成できないため、このファイルへの登録がおすすめです。
+*/
+window.MS_QUESTIONS = [
+  {
+    "id": "X001",
+    "genre": "A",
+    "enemy": "あいち",
+    "win": "きろく",
+    "draw": "はいち",
+    "lose": "きつね",
+    "family": "数字",
+    "note": "いち(1) vs ろく(6)。「きろく」だけが明確な狙い。",
+    "status": "採用"
+  },
+  {
+    "id": "X002",
+    "genre": "A",
+    "enemy": "あいち",
+    "win": "いえす",
+    "draw": "あきた",
+    "lose": "あきす",
+    "family": "英字",
+    "note": "I vs S のアルファベット順。",
+    "status": "採用"
+  },
+  {
+    "id": "X003",
+    "genre": "A",
+    "enemy": "あいち",
+    "win": "さんそ",
+    "draw": "はいち",
+    "lose": "れいき",
+    "family": "数字",
+    "note": "いち(1) vs さん(3)。LOSEに「れい(0)」を置く。",
+    "status": "候補"
+  },
+  {
+    "id": "X004",
+    "genre": "A",
+    "enemy": "らせん",
+    "win": "まんと",
+    "draw": "きのう",
+    "lose": "あひる",
+    "family": "位取り",
+    "note": "千 vs 万 のミスリード。",
+    "status": "採用"
+  },
+  {
+    "id": "X005",
+    "genre": "A",
+    "enemy": "らせん",
+    "win": "ふまん",
+    "draw": "きのう",
+    "lose": "あひる",
+    "family": "位取り",
+    "note": "千 vs 万 の別解。",
+    "status": "採用"
+  },
+  {
+    "id": "X006",
+    "genre": "A",
+    "enemy": "ふまん",
+    "win": "おくら",
+    "draw": "あらし",
+    "lose": "きのう",
+    "family": "位取り",
+    "note": "万 vs 億 のミスリード。その他の選択肢は数字なし。",
+    "status": "採用"
+  },
+  {
+    "id": "X007",
+    "genre": "A",    "enemy": "きおく",
+    "win": "まんと",
+    "draw": "あいこ",
+    "lose": "ほのお",
+    "family": "位取り反転",
+    "note": "「億」が「万」に負ける。位取り説の反例。",
+    "status": "採用"
+  },
+  {
+    "id": "X008",
+    "genre": "A",
+    "enemy": "あきた",
+    "win": "いわて",
+    "draw": "いたち",
+    "lose": "きつね",
+    "family": "都道府県",
+    "note": "実際の県面積でも岩手が秋田より広い。",
+    "status": "採用"
+  },
+  {
+    "id": "X009",
+    "genre": "A",
+    "enemy": "あいち",
+    "win": "いわて",
+    "draw": "はいち",
+    "lose": "きつね",
+    "family": "都道府県",
+    "note": "実際の県面積でも岩手が愛知より広い。",
+    "status": "採用"
+  },
+  {
+    "id": "X010",
+    "genre": "A",
+    "enemy": "とやま",
+    "win": "いわて",
+    "draw": "こうか",
+    "lose": "あひる",
+    "family": "都道府県",
+    "note": "実際の県面積でも岩手が富山より広い。",
+    "status": "採用"
+  },
+  {
+    "id": "X011",
+    "genre": "A",
+    "enemy": "ふくい",
+    "win": "いわて",
+    "draw": "しへい",
+    "lose": "あひる",
+    "family": "都道府県",
+    "note": "実際の県面積でも岩手が福井より広い。",
+    "status": "採用"
+  },
+  {
+    "id": "X012",
+    "genre": "A",
+    "enemy": "こうち",
+    "win": "いわて",
+    "draw": "まつり",
+    "lose": "あひる",
+    "family": "都道府県",
+    "note": "実際の県面積でも岩手が高知より広い。",
+    "status": "採用"
+  },
+  {
+    "id": "X013",
+    "genre": "A",
+    "enemy": "しまね",
+    "win": "いわて",
+    "draw": "かれい",
+    "lose": "まくら",
+    "family": "都道府県",
+    "note": "実際の県面積でも岩手が島根より広い。",
+    "status": "採用"
+  },
+  {
+    "id": "X014",
+    "genre": "A",
+    "enemy": "えひめ",
+    "win": "いわて",
+    "draw": "さくら",
+    "lose": "あひる",
+    "family": "都道府県",
+    "note": "実際の県面積でも岩手が愛媛より広い。",
+    "status": "採用"
+  },
+  {
+    "id": "X015",
+    "genre": "A",
+    "enemy": "とやま",
+    "win": "しまね",
+    "draw": "しへい",
+    "lose": "あひる",
+    "family": "都道府県",
+    "note": "実際の県面積でも島根は富山より広い。",
+    "status": "候補"
+  },
+  {
+    "id": "X016",
+    "genre": "A",
+    "enemy": "ふくい",
+    "win": "えひめ",
+    "draw": "こうか",
+    "lose": "きつね",
+    "family": "都道府県",
+    "note": "実際の県面積でも愛媛は福井より広い。",
+    "status": "候補"
+  },
+  {
+    "id": "X017",
+    "genre": "A",
+    "enemy": "あいち",
+    "win": "こうち",
+    "draw": "いたち",
+    "lose": "きつね",
+    "family": "都道府県",
+    "note": "実際の県面積でも高知は愛知より広い。",
+    "status": "候補"
+  },
+  {
+    "id": "X018",
+    "genre": "A",
+    "enemy": "すいそ",
+    "win": "さんそ",
+    "draw": "しへい",
+    "lose": "あきす",
+    "family": "元素原子量",
+    "note": "水素(約1) < 酸素(約16)。",
+    "status": "採用"
+  },
+  {    "id": "X019",
+    "genre": "A",
+    "enemy": "すいそ",
+    "win": "ほうそ",
+    "draw": "こうか",
+    "lose": "ほのお",
+    "family": "元素原子量",
+    "note": "水素(約1) < ホウ素(約11)。",
+    "status": "候補"
+  },
+  {
+    "id": "X020",
+    "genre": "A",
+    "enemy": "すいそ",
+    "win": "たんそ",
+    "draw": "ふくい",
+    "lose": "あきす",
+    "family": "元素原子量",
+    "note": "水素(約1) < 炭素(約12)。",
+    "status": "候補"
+  },
+  {
+    "id": "X021",
+    "genre": "A",
+    "enemy": "すいそ",
+    "win": "ねおん",
+    "draw": "こうか",
+    "lose": "ほのお",
+    "family": "元素原子量",
+    "note": "水素(約1) < ネオン(約20)。",
+    "status": "候補"
+  },
+  {
+    "id": "X022",
+    "genre": "A",
+    "enemy": "ほうそ",
+    "win": "たんそ",
+    "draw": "きのう",
+    "lose": "あひる",
+    "family": "元素原子量",
+    "note": "ホウ素(約11) < 炭素(約12)。",
+    "status": "候補"
+  },
+  {
+    "id": "X023",
+    "genre": "A",
+    "enemy": "ほうそ",
+    "win": "さんそ",
+    "draw": "らせん",
+    "lose": "きつね",
+    "family": "元素原子量",
+    "note": "ホウ素(約11) < 酸素(約16)。",
+    "status": "候補"
+  },
+  {
+    "id": "X024",
+    "genre": "A",
+    "enemy": "ほうそ",
+    "win": "ようそ",
+    "draw": "きのう",
+    "lose": "まくら",
+    "family": "元素原子量",
+    "note": "ホウ素(約11) < ヨウ素(約127)。",
+    "status": "候補"
+  },
+  {
+    "id": "X025",
+    "genre": "A",
+    "enemy": "たんそ",
+    "win": "さんそ",
+    "draw": "おから",
+    "lose": "かえる",
+    "family": "元素原子量",
+    "note": "炭素(約12) < 酸素(約16)。",
+    "status": "採用"
+  },
+  {
+    "id": "X026",
+    "genre": "A",
+    "enemy": "たんそ",
+    "win": "あえん",
+    "draw": "おから",
+    "lose": "かえる",
+    "family": "元素原子量",
+    "note": "炭素(約12) < 亜鉛(約65)。",
+    "status": "候補"
+  },
+  {
+    "id": "X027",
+    "genre": "A",
+    "enemy": "ねおん",
+    "win": "えんそ",
+    "draw": "きのう",
+    "lose": "あひる",
+    "family": "元素原子量",
+    "note": "ネオン(約20) < 塩素(約35)。",
+    "status": "候補"
+  },
+  {
+    "id": "X028",
+    "genre": "A",
+    "enemy": "ねおん",
+    "win": "ようそ",
+    "draw": "らせん",
+    "lose": "あひる",
+    "family": "元素原子量",
+    "note": "ネオン(約20) < ヨウ素(約127)。",
+    "status": "候補"
+  },
+  {
+    "id": "X029",
+    "genre": "A",
+    "enemy": "えんそ",
+    "win": "あえん",
+    "draw": "まんと",
+    "lose": "まくら",
+    "family": "元素原子量",
+    "note": "塩素(約35) < 亜鉛(約65)。",
+    "status": "候補"
+  },
+  {
+    "id": "X030",
+    "genre": "A",
+    "enemy": "いわし",
+    "win": "かつお",
+    "draw": "あさひ",
+    "lose": "ほのお",
+    "family": "生物の大きさ",
+    "note": "イワシよりカツオの方が大きい。ほかの選択肢は自由。",
+    "status": "採用"  },
+  {
+    "id": "X031",
+    "genre": "A",
+    "enemy": "あくま",
+    "win": "てんし",
+    "draw": "さくら",
+    "lose": "すいか",
+    "family": "善悪",
+    "note": "悪魔 vs 天使。ほかの選択肢は自由。",
+    "status": "採用"
+  },
+  {
+    "id": "X032",
+    "genre": "A",
+    "enemy": "こおり",
+    "win": "かえん",
+    "draw": "あきた",
+    "lose": "きつね",
+    "family": "属性相性",
+    "note": "氷に火炎が勝つ。ほかの選択肢は自由。",
+    "status": "採用"
+  },
+  {
+    "id": "X033",
+    "genre": "A",
+    "enemy": "はたけ",
+    "win": "まつり",
+    "draw": "きのう",
+    "lose": "あひる",
+    "family": "松竹梅",
+    "note": "竹 vs 松（は竹／松り）。ほかの選択肢は自由。",
+    "status": "採用"
+  },
+  {
+    "id": "X034",
+    "genre": "B",
+    "enemy": "みかん",
+    "win": "めろん",
+    "draw": "かりん",
+    "lose": "すいか",
+    "family": "果物",
+    "note": "メロンは勝ち、スイカは負ける。四語全て果物。",
+    "status": "採用"
+  },
+  {
+    "id": "X035",
+    "genre": "B",
+    "enemy": "かりん",
+    "win": "めろん",
+    "draw": "みかん",
+    "lose": "れもん",
+    "family": "果物",
+    "note": "四語全て果物。",
+    "status": "候補"
+  },
+  {
+    "id": "X036",
+    "genre": "B",
+    "enemy": "らいち",
+    "win": "みかん",
+    "draw": "すいか",
+    "lose": "きうい",
+    "family": "果物",
+    "note": "四語全て果物。ライチは果物として一般に流通。",
+    "status": "候補"
+  },
+  {
+    "id": "X037",
+    "genre": "B",
+    "enemy": "いわし",
+    "win": "かつお",
+    "draw": "あさり",
+    "lose": "さんま",
+    "family": "魚介",
+    "note": "四語全て魚介類。既存「いわし→かつお」を統一。",
+    "status": "採用"
+  },
+  {
+    "id": "X038",
+    "genre": "B",
+    "enemy": "かつお",
+    "win": "たらこ",
+    "draw": "かれい",
+    "lose": "さんま",
+    "family": "魚介",
+    "note": "魚介類として統一。",
+    "status": "採用"
+  },
+  {
+    "id": "X039",
+    "genre": "B",
+    "enemy": "かれい",
+    "win": "たらこ",
+    "draw": "かつお",
+    "lose": "しらす",
+    "family": "魚介",
+    "note": "魚介類として統一。",
+    "status": "候補"
+  },
+  {
+    "id": "X040",
+    "genre": "B",
+    "enemy": "あさり",
+    "win": "ほたて",
+    "draw": "いわし",
+    "lose": "さんま",
+    "family": "魚介",
+    "note": "魚介類として統一。",
+    "status": "候補"
+  },
+  {
+    "id": "X041",
+    "genre": "B",
+    "enemy": "ほたて",
+    "win": "かつお",
+    "draw": "しらす",
+    "lose": "いわし",
+    "family": "魚介",
+    "note": "魚介類として統一。",
+    "status": "候補"
+  },
+  {
+    "id": "X042",
+    "genre": "B",
+    "enemy": "きつね",
+    "win": "たぬき",
+    "draw": "あしか",
+    "lose": "こねこ",
+    "family": "生き物",    "note": "四語全て哺乳類。",
+    "status": "採用"
+  },
+  {
+    "id": "X043",
+    "genre": "B",
+    "enemy": "たぬき",
+    "win": "こあら",
+    "draw": "こうし",
+    "lose": "こねこ",
+    "family": "生き物",
+    "note": "四語全て哺乳類。",
+    "status": "候補"
+  },
+  {
+    "id": "X044",
+    "genre": "B",
+    "enemy": "こうし",
+    "win": "こうま",
+    "draw": "たぬき",
+    "lose": "あしか",
+    "family": "生き物",
+    "note": "四語全て哺乳類。",
+    "status": "候補"
+  },
+  {
+    "id": "X045",
+    "genre": "B",
+    "enemy": "やもり",
+    "win": "いもり",
+    "draw": "たぬき",
+    "lose": "きつね",
+    "family": "生き物",
+    "note": "四語全て動物。",
+    "status": "採用"
+  },
+  {
+    "id": "X046",
+    "genre": "B",
+    "enemy": "きりん",
+    "win": "こあら",
+    "draw": "ひらめ",
+    "lose": "あしか",
+    "family": "生き物",
+    "note": "四語全て動物。キリン＝ヒラメがDRAW。",
+    "status": "候補"
+  },
+  {
+    "id": "X047",
+    "genre": "B",
+    "enemy": "いるか",
+    "win": "こあら",
+    "draw": "けむし",
+    "lose": "あしか",
+    "family": "生き物",
+    "note": "四語全て生き物。イルカ＝毛虫がDRAW。",
+    "status": "候補"
+  },
+  {
+    "id": "X048",
+    "genre": "B",
+    "enemy": "さくら",
+    "win": "あろえ",
+    "draw": "けやき",
+    "lose": "すみれ",
+    "family": "植物",
+    "note": "四語全て植物。",
+    "status": "採用"
+  },
+  {
+    "id": "X049",
+    "genre": "B",
+    "enemy": "けやき",
+    "win": "あろえ",
+    "draw": "ひのき",
+    "lose": "さつき",
+    "family": "植物",
+    "note": "四語全て植物。",
+    "status": "候補"
+  },
+  {
+    "id": "X050",
+    "genre": "B",
+    "enemy": "こうか",
+    "win": "おさつ",
+    "draw": "しへい",
+    "lose": "しちや",
+    "family": "金銭",
+    "note": "金銭関連の四語。硬貨＝紙幣がDRAW。",
+    "status": "採用"
+  },
+  {
+    "id": "X051",
+    "genre": "B",
+    "enemy": "ふすま",
+    "win": "たんす",
+    "draw": "ふとん",
+    "lose": "たたみ",
+    "family": "日用品",
+    "note": "四語全て室内の生活用品・家具。",
+    "status": "候補"
+  },
+  {
+    "id": "X052",
+    "genre": "B",
+    "enemy": "まくら",
+    "win": "ふとん",
+    "draw": "こたつ",
+    "lose": "たたみ",
+    "family": "日用品",
+    "note": "四語全て和室で使う生活用品。",
+    "status": "候補"
+  },
+  {
+    "id": "X053",
+    "genre": "B",
+    "enemy": "きもの",
+    "win": "まんと",
+    "draw": "はくい",
+    "lose": "ゆかた",
+    "family": "衣類",
+    "note": "四語全て衣服。",
+    "status": "候補"
+  },
+  {
+    "id": "X054",
+    "genre": "B",
+    "enemy": "きのう",
+    "win": "よなか",
+    "draw": "みらい",    "lose": "あした",
+    "family": "時間",
+    "note": "四語全て時間を表す。昨日＝未来がDRAW。",
+    "status": "候補"
+  },
+  {
+    "id": "X055",
+    "genre": "B",
+    "enemy": "ひるま",
+    "win": "よなか",
+    "draw": "まひる",
+    "lose": "あさひ",
+    "family": "時間",
+    "note": "時刻・時間帯の連想。",
+    "status": "候補"
+  },
+  {
+    "id": "X056",
+    "genre": "B",
+    "enemy": "らおす",
+    "win": "もなこ",
+    "draw": "さもあ",
+    "lose": "ろしあ",
+    "family": "国",
+    "note": "四語全て国。国土面積の直感と異なる。",
+    "status": "候補"
+  },
+  {
+    "id": "X057",
+    "genre": "B",
+    "enemy": "さもあ",
+    "win": "にほん",
+    "draw": "らおす",
+    "lose": "ろしあ",
+    "family": "国",
+    "note": "四語全て国。",
+    "status": "候補"
+  },
+  {
+    "id": "X058",
+    "genre": "B",
+    "enemy": "とやま",
+    "win": "しまね",
+    "draw": "ふくい",
+    "lose": "あきた",
+    "family": "県",
+    "note": "四語全て県。実際の面積とDRAWは一致しないためB。",
+    "status": "候補"
+  },
+  {
+    "id": "X059",
+    "genre": "B",
+    "enemy": "ふくい",
+    "win": "えひめ",
+    "draw": "とやま",
+    "lose": "あきた",
+    "family": "県",
+    "note": "四語全て県。",
+    "status": "候補"
+  },
+  {
+    "id": "X060",
+    "genre": "B",
+    "enemy": "みりん",
+    "win": "さとう",
+    "draw": "そると",
+    "lose": "いちみ",
+    "family": "調味料",
+    "note": "四語全て調味料。",
+    "status": "候補"
+  },
+  {
+    "id": "X061",
+    "genre": "B",
+    "enemy": "ほうそ",
+    "win": "たんそ",
+    "draw": "ねおん",
+    "lose": "いおう",
+    "family": "元素",
+    "note": "四語全て元素。原子量説には反例。",
+    "status": "候補"
+  },
+  {
+    "id": "X062",
+    "genre": "C",
+    "enemy": "かたみ",
+    "win": "かたて",
+    "draw": "みかた",
+    "lose": "かたな",
+    "family": "かた",
+    "note": "「かた」が語頭と語尾に出現。",
+    "status": "採用"
+  },
+  {
+    "id": "X063",
+    "genre": "C",
+    "enemy": "しせん",
+    "win": "せんろ",
+    "draw": "せんし",
+    "lose": "せんす",
+    "family": "せん",
+    "note": "「せん」が語頭と語尾に出現。",
+    "status": "候補"
+  },
+  {
+    "id": "X064",
+    "genre": "C",
+    "enemy": "みかん",
+    "win": "かんよ",
+    "draw": "かんり",
+    "lose": "やかん",
+    "family": "かん",
+    "note": "「かん」が語頭と語尾に出現。",
+    "status": "候補"
+  },
+  {
+    "id": "X065",
+    "genre": "C",
+    "enemy": "なかい",
+    "win": "おなか",
+    "draw": "なかみ",
+    "lose": "なかま",
+    "family": "なか",
+    "note": "「なか」が語頭と語尾に出現。",
+    "status": "候補"
+  },
+  {
+    "id": "X066",
+    "genre": "C",
+    "enemy": "しんか",    "win": "えんか",
+    "draw": "みんか",
+    "lose": "たんか",
+    "family": "んか",
+    "note": "語尾の「んか」を共有。",
+    "status": "候補"
+  },
+  {
+    "id": "X067",
+    "genre": "C",
+    "enemy": "とけい",
+    "win": "けいま",
+    "draw": "けいと",
+    "lose": "けいそ",
+    "family": "けい",
+    "note": "「けい」が語頭と語尾に出現。",
+    "status": "候補"
+  },
+  {
+    "id": "X068",
+    "genre": "C",
+    "enemy": "ひまん",
+    "win": "まんと",
+    "draw": "まんき",
+    "lose": "まんた",
+    "family": "まん",
+    "note": "「まん」が語頭と語尾に出現。",
+    "status": "候補"
+  },
+  {
+    "id": "X069",
+    "genre": "C",
+    "enemy": "めいし",
+    "win": "こいし",
+    "draw": "へいし",
+    "lose": "さいし",
+    "family": "いし",
+    "note": "語尾の「いし」を共有。",
+    "status": "候補"
+  },
+  {
+    "id": "X070",
+    "genre": "C",
+    "enemy": "いかり",
+    "win": "かりん",
+    "draw": "ゆかり",
+    "lose": "あかり",
+    "family": "かり",
+    "note": "「かり」が語頭と語尾に出現。",
+    "status": "候補"
+  },
+  {
+    "id": "X071",
+    "genre": "C",
+    "enemy": "かせい",
+    "win": "せいり",
+    "draw": "せいか",
+    "lose": "せいと",
+    "family": "せい",
+    "note": "「せい」が語頭と語尾に出現。",
+    "status": "候補"
+  },
+  {
+    "id": "X072",
+    "genre": "C",
+    "enemy": "たいや",
+    "win": "たいほ",
+    "draw": "やたい",
+    "lose": "したい",
+    "family": "たい",
+    "note": "「たい」が語頭と語尾に出現。",
+    "status": "候補"
+  },
+  {
+    "id": "X073",
+    "genre": "C",
+    "enemy": "はなみ",
+    "win": "はなれ",
+    "draw": "はなし",
+    "lose": "はなや",
+    "family": "はな",
+    "note": "語頭の「はな」を共有。",
+    "status": "候補"
+  },
+  {
+    "id": "X074",
+    "genre": "C",
+    "enemy": "めいし",
+    "win": "めいか",
+    "draw": "めいよ",
+    "lose": "めいろ",
+    "family": "めい",
+    "note": "語頭の「めい」を共有。",
+    "status": "候補"
+  },
+  {
+    "id": "X075",
+    "genre": "C",
+    "enemy": "かいこ",
+    "win": "かいろ",
+    "draw": "はかい",
+    "lose": "しかい",
+    "family": "かい",
+    "note": "「かい」が語頭と語尾に出現。",
+    "status": "候補"
+  },
+  {
+    "id": "X076",
+    "genre": "C",
+    "enemy": "きんし",
+    "win": "きんこ",
+    "draw": "しきん",
+    "lose": "きんき",
+    "family": "きん",
+    "note": "「きん」が語頭と語尾に出現。",
+    "status": "候補"
+  },
+  {
+    "id": "X077",
+    "genre": "C",
+    "enemy": "ひとり",
+    "win": "とりい",
+    "draw": "とりお",
+    "lose": "ことり",
+    "family": "とり",
+    "note": "「とり」が語頭と語尾に出現。",
+    "status": "候補"
+  },
+  {
+    "id": "X078",    "genre": "C",
+    "enemy": "はかり",
+    "win": "はかせ",
+    "draw": "はかい",
+    "lose": "はかま",
+    "family": "はか",
+    "note": "語頭の「はか」を共有。",
+    "status": "候補"
+  },
+  {
+    "id": "X079",
+    "genre": "C",
+    "enemy": "きりん",
+    "win": "きりこ",
+    "draw": "きりつ",
+    "lose": "きりみ",
+    "family": "きり",
+    "note": "語頭の「きり」を共有。",
+    "status": "候補"
+  },
+  {
+    "id": "X080",
+    "genre": "C",
+    "enemy": "たんく",
+    "win": "たんそ",
+    "draw": "たんす",
+    "lose": "たんか",
+    "family": "たん",
+    "note": "語頭の「たん」を共有。",
+    "status": "候補"
+  },
+  {
+    "id": "X081",
+    "genre": "D",
+    "enemy": "あいち",
+    "win": "えいち",
+    "draw": "はいち",
+    "lose": "いちみ",
+    "family": "指定特例",
+    "note": "ユーザー指定でD。ただし語形はCの「いち」にも合致。",
+    "status": "採用"
+  },
+  {
+    "id": "X082",
+    "genre": "D",
+    "enemy": "きのこ",
+    "win": "きんこ",
+    "draw": "きなこ",
+    "lose": "きのう",
+    "family": "語感特例",
+    "note": "ユーザー指定の「きのこ・きなこ・きんこ」を含めた語感セット。",
+    "status": "採用"
+  },
+  {
+    "id": "X083",
+    "genre": "D",
+    "enemy": "まつり",
+    "win": "こあら",
+    "draw": "きろく",
+    "lose": "すいか",
+    "family": "完全ランダム",
+    "note": "祭り／コアラ／記録／スイカ。",
+    "status": "候補"
+  },
+  {
+    "id": "X084",
+    "genre": "D",
+    "enemy": "ふとん",
+    "win": "めろん",
+    "draw": "きのう",
+    "lose": "あひる",
+    "family": "完全ランダム",
+    "note": "布団／メロン／昨日／アヒル。",
+    "status": "候補"
+  },
+  {
+    "id": "X085",
+    "genre": "D",
+    "enemy": "いくら",
+    "win": "あろえ",
+    "draw": "きなこ",
+    "lose": "ひらめ",
+    "family": "完全ランダム",
+    "note": "イクラ／アロエ／きなこ／ヒラメ。",
+    "status": "候補"
+  },
+  {
+    "id": "X086",
+    "genre": "D",
+    "enemy": "かめら",
+    "win": "こあら",
+    "draw": "いわて",
+    "lose": "あひる",
+    "family": "完全ランダム",
+    "note": "カメラ／コアラ／岩手／アヒル。",
+    "status": "候補"
+  },
+  {
+    "id": "X087",
+    "genre": "D",
+    "enemy": "あらし",
+    "win": "たらこ",
+    "draw": "ゆかり",
+    "lose": "すいか",
+    "family": "完全ランダム",
+    "note": "嵐／タラコ／縁／スイカ。",
+    "status": "候補"
+  },
+  {
+    "id": "X088",
+    "genre": "D",
+    "enemy": "ねおん",
+    "win": "まんと",
+    "draw": "ふとん",
+    "lose": "あひる",
+    "family": "完全ランダム",
+    "note": "ネオン／マント／布団／アヒル。",
+    "status": "候補"
+  },
+  {
+    "id": "X089",
+    "genre": "D",
+    "enemy": "らせん",
+    "win": "きりこ",
+    "draw": "ふとん",
+    "lose": "こねこ",
+    "family": "完全ランダム",
+    "note": "螺旋／切子／布団／子猫。",
+    "status": "候補"
+  },  {
+    "id": "X090",
+    "genre": "D",
+    "enemy": "かたみ",
+    "win": "せんす",
+    "draw": "あさひ",
+    "lose": "うるふ",
+    "family": "完全ランダム",
+    "note": "形見／扇子／朝日／ウルフ。",
+    "status": "候補"
+  },
+  {
+    "id": "X091",
+    "genre": "D",
+    "enemy": "たんす",
+    "win": "いんこ",
+    "draw": "くるま",
+    "lose": "こいぬ",
+    "family": "完全ランダム",
+    "note": "タンス／インコ／車／子犬。",
+    "status": "候補"
+  }
+];
+
+</script>
+<script>
+/*
+  ここが「単語を追加するだけ」でゲームに反映させるファイルです。
+  MS_EXTRA_WORDS に { word: "ひらがな3文字", tags: ["カテゴリ名"] } を追加してください。
+  追加した語は D 問題に自動で組み込まれ、同じカテゴリの語が揃えば B、
+  共通する連続2文字が4語揃えば C の問題も自動で追加されます。
+  A（狙ったミスリード）は data/questions.js に手動追加してください。
+  書き換えたらブラウザを再読み込みします。サーバーやビルドは不要です。
+*/
+window.MS_EXTRA_WORDS = [
+  // { word: "あかね", tags: ["植物"] },
+];
+
+/* 辞書用の基本語彙：通常戦の選択肢・ラスボスの一般語チェックにも利用。 */
+window.MS_BASE_WORDS = `
+あいこ あいす あいち あかみ あかり あきす あきた あきち あきや あくま あくむ
+あさひ あさり あしか あした あしゆ あせも あたり あひる あふろ あやめ あらし あろえ あろま あんと
+いえい いおた いかり いくら いせき いたち いちみ いなほ いふく いもに いもり いらく いらん いるか いろり いわし いわて いんく いんこ
+うえき うきわ うこん うしろ うちわ うつわ うりこ うるふ うるる えいち えいと えかき えすて えのき えひめ えほう えほん えるふ えんか えんま
+おいる おうと おうむ おおつ おかか おかみ おかめ おかゆ おから おくら おさつ おしめ おせち おせろ おたく おたま おつや おとこ おなか おなら おふろ おまる おむつ おめん おもて おもり おやき おやこ おんち おんな
+かいこ かいろ かえる かかお かかし かくに かけゆ かける かせい かせき かたな かつお かつら かふん かほん かめら かめん かもめ かよう からし からす からて かるた かるて かれい かれは かわら かんき かんま
+きいろ きうい きこう きこり きすう きせい きせつ きつね きなこ きのう きのこ きむち きめら きもの きりつ きりみ きりん きんき きんこ きんし
+くうき くさい くさり くすり くてん くにん くもり くるま くるみ くろこ けあな けいと けいま けとる けにあ けむし けむり けやき けんか けんさ
+こあら こいぬ こいん こうか こうし こうち こうふ こうま こおり こけし ここあ こたつ ことり こねこ こふん こもろ こよみ こるく ころん こんろ
+さいふ さうな さかな さかや さかん さくら さしみ さそり さつき さてつ さとう さむえ さむけ さもあ さろん さわら さんた さんま
+しいら しおり しかい しかく しけい しけん しこく したい しちみ しちや しつけ しない しまね しもん しらす しらみ しりあ しるこ しろみ しわす しんか しんく
+すいか すいす すしや すすき すまほ すみれ すもう するめ すわん せいか せいと せいり せきひ せすな せなか せりふ せろり せんす せんと せんろ
+そうこ そうし そうり そすう そまり そると たいこ たいつ たいほ たいや たうえ たおる たかな たから たこす たすき たたみ たぬき たらい たらこ たわし たわら たんか たんく たんす
+ちきん ちくわ ちまき ちらし ちわわ つきみ つくえ つくし つけま つなみ つみき つみれ つりわ てあれ ていし てすと てすり てにす てまり てんし てんと
+といし といれ とうふ とうゆ とけい とこや とさか とまと とやま とりい とりお とるこ とろろ ないと ないふ ないん なうる なかい なまえ なまこ なます なみき なると
+にうえ にしん にほん にもつ にもの ぬりえ ねいる ねおき ねまき のうか のうは のれん
+はいき はいく はいち はうす はかせ はかま はかり はきけ はくい はくし はさみ はたけ はてな はなみ はなや はにわ はまち はまや はやし はわい はんこ
+ひかり ひとり ひなた ひなん ひのき ひまん ひみつ ひもの ひやけ ひよこ ひらめ ひるね ふうふ ふきや ふくい ふくろ ふけい ふすま ふせん ふたり ふとん ふみえ ふりこ ふりま ふんか
+へいし へちま ほうか ほうき ほうし ほくろ ほたて ほたる ほてい ほてる ほとけ ほのお ほへい ほるん ほんや
+まいく まいこ まうす まくら ますく まつえ まつり まるた まるひ まんた みあい みいら みかん みこし みさき みしん みすと みとん みなみ みまい みらい みりん みるく みんか みんと
+むくみ むすこ むすめ むせん むつき めいし めいろ めまい めろん もあい もうし もうふ もけい もなか もなこ もにた もやし
+やおや やかん やけい やさい やしき やたい やもり やよい やんま ゆうひ ゆかた ゆかり ゆせん ゆのみ ゆみや ゆもみ ようむ よなき よにん よろい
+らいう らいち らいと らおす らすく らせん らむね らんち りきし りこん りすと りりく りんす れきし れそと れたす れふと れもん れんち
+ろうか ろうし ろうや ろくろ ろしあ ろふと わいろ わいん わかめ わしつ わふく われめ をたく
+あんこ あんよ ほあん いろん
+`.trim().split(/\s+/);
+
+</script>
+<script>
+/* 管理画面で追加・変更した公開データ。管理画面の「GitHubに公開」で更新されます。 */
+window.MS_ADMIN_DATA = {"questions":[],"words":[],"disabledIds":[]};
+
+</script>
+<script>
+/* RPG edition fixed story, first encounters and expansion vocabulary. */
+window.MS_RPG = {
+  tutorial:[
+    {name:'スウ・チー',line:'異論に挑みたいんだって？ それなら、まずは私と勝負してみようか。',winLine:'やるじゃない。次の相手を紹介するよ。',enemy:'せいち',options:['きろく','えいち','きれい']},
+    {name:'シュウ・キ・ヒョウ',line:'次は私が相手だ。準備はいいかな？',winLine:'見事だ。それでは、次に進みたまえ。',enemy:'たんそ',options:['さんそ','すいそ','ほうそ']},
+    {name:'タ・イジュウ',line:'おっ、次は俺の番か！ さあ、勝負だ！',winLine:'ははっ、負けちまった！ 次もその調子でいけよ！',enemy:'たぬき',options:['きりん','あひる','こねこ']},
+    {name:'ケタチ・ガイ',line:'ふむ。ここまで勝ち進んできたのか。では、私の問題はどうかな？',winLine:'お見事。私の負けだ。',enemy:'ふまん',options:['おくら','すまん','らせん']},
+    {name:'ゼン・アーク',line:'私が最後の相手だ。君の答えを聞かせてもらおう。',winLine:'見事だ。君は5人全員に勝利した。',enemy:'あくま',options:['てんし','まもの','ふつう']}
+  ],
+  randomizer:{name:'ランダ・マイザ',line:'ちょっと待って。5人とも倒したんだ。じゃあ、次は僕とも遊ぼうよ。',enemy:'せんす',options:['まほう','むてき','きせき']},
+  places:[
+    {id:'veg',name:'八百屋',person:'ヤオさん',icon:'✿',tag:'青果',line:'いらっしゃい！ 今日は何を探してるんだい？ 言葉の勝負か。いいよ、相手になろう！',first:{enemy:'あおな',options:['もやし','めろん','たかな']},quest:{title:'自慢の果物',text:'うちのみかんより強い果物、どこかにないかねえ？',type:'higher',base:'みかん',category:'fruit'}},
+    {id:'fish',name:'魚屋',person:'ウオスケ',icon:'≋',tag:'魚介',line:'らっしゃい！ 魚のことなら任せとけ。ひと勝負しようぜ！',first:{enemy:'いわし',options:['かつお','かれい','さんま']},quest:{title:'同じ強さの言葉',text:'「さかな」と同じ強さの、別の言葉を探してるんだ。魚じゃなくても構わねえ。',type:'equal',base:'さかな'}},
+    {id:'animal',name:'動物小屋',person:'ミオ',icon:'♧',tag:'生き物',line:'こんにちは。動物たちに会いに来たの？ せっかくだから、言葉の勝負もしていかない？',first:null,quest:{title:'小さな挑戦者',text:'きつねより弱い動物って、どんな子がいるかな？',type:'lower',base:'きつね',category:'animal'}},
+    {id:'goods',name:'雑貨屋',person:'ヨロズ',icon:'◇',tag:'日用品',line:'いらっしゃい。何でもあるよ、うちの店には。言葉の勝負？ それも取り扱ってるよ。',first:{enemy:'まくら',options:['あれい','はかり','かたな']},quest:{title:'倍の強さ',text:'この「はかり」の、ちょうど2倍の強さを持つ道具を探しているんだ。',type:'double',base:'はかり',category:'goods'}},
+    {id:'print',name:'印刷所',person:'カツジ',icon:'▤',tag:'共通の二文字',line:'……言葉を作りに来たのか。二文字あれば、いろいろ作れる。試してみるか？',first:{enemy:'へいわ',options:['れいわ','かいわ','いわて']},quest:{title:'二文字の可能性',text:'「きれい」より強く、「れいわ」より弱い、「れい」を含む別の言葉を探してくれ。',type:'between',low:'きれい',high:'れいわ',pair:'れい'}}
+  ],
+  tags:{
+    fruit:'みかん めろん かりん すいか れもん いちご きうい らいち あんず かかお',
+    vegetable:'たかな あおな もやし おくら とまと かぶら せろり えのき うこん やさい れたす へちま',
+    fish:'さかな いわし かつお さんま かれい ひらめ にしん さわら いさき かます さより はまち わらさ やまめ いわな しらす しいら なまこ ほたて あさり',
+    animal:'きりん こあら きつね たぬき こねこ こいぬ ひよこ からす あひる いるか あしか まむし かえる いもり やもり かもめ おうむ いんこ さそり ほたる かいこ けむし ちわわ ことり',
+    goods:'まくら はかり かたな あれい せんす うちわ とけい はさみ くるま すまほ かめら こたつ ふとん やかん たわし めいし たんす ふすま まいく おさら けいと たいこ つくえ たらい かばん ふせん ねまき こいん'
+  },
+  extra:'せいち きろく えいち きれい たんそ さんそ すいそ ほうそ ふまん すまん おくら らせん あくま てんし まもの ふつう せんす まほう むてき きせき あおな もやし めろん たかな まくら はかり かたな あれい かれい れいわ かいわ へいわ いわて きつね こねこ みかん さかな あんこ あんよ ほあん あもん あんと そあん いろん',
+  bossAnswers:['あんこ','あんよ','ほあん','あもん','あんと','そあん']
+};
+
+</script>
+<script>
+/* MAKE SENSE RPG | independent story edition. Local-first, no build or server required. */
+(()=>{'use strict';
+const cfg=window.MS_RPG, $=s=>document.querySelector(s);
+const ROWS=[['あ','い','う','え','お'],['か','き','く','け','こ'],['さ','し','す','せ','そ'],['た','ち','つ','て','と'],['な','に','ぬ','ね','の'],['は','ひ','ふ','へ','ほ'],['ま','み','む','め','も'],['や',null,'ゆ',null,'よ'],['ら','り','る','れ','ろ'],['わ',null,null,null,'を'],['ん',null,null,null,null]];
+const KANA=new Map();ROWS.forEach((r,x)=>r.forEach((c,y)=>{if(c)KANA.set(c,{x,y});}));
+const BLOCKED=new Set(['うんこ','うんち']);
+const valid=w=>typeof w==='string'&&[...w].length===3&&![...w].some(c=>!KANA.has(c))&&!BLOCKED.has(w);
+const area2=w=>{if(!valid(w))return null;let [a,b,c]=[...w].map(ch=>KANA.get(ch));return Math.abs((b.x-a.x)*(c.y-a.y)-(c.x-a.x)*(b.y-a.y));};
+const score=w=>area2(w)/2;
+const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const shuffle=list=>{let a=[...list];for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const allWords=new Set([...(window.MS_BASE_WORDS||[]),...cfg.extra.split(/\s+/),...cfg.bossAnswers,'いろん']);
+for(const q of window.MS_QUESTIONS||[])[q.enemy,q.win,q.draw,q.lose].forEach(w=>allWords.add(w));
+const overrides=(()=>{try{const draft=JSON.parse(localStorage.getItem('makesense-admin-draft-v1')||'null');if(draft?.questions&&draft?.words)return draft;}catch{}return window.MS_ADMIN_DATA||{};})();
+for(const q of overrides.questions||[])[q.enemy,q.win,q.draw,q.lose].forEach(w=>allWords.add(w));
+for(const a of [...(window.MS_EXTRA_WORDS||[]),...(overrides.words||[])])allWords.add(typeof a==='string'?a:a.word);
+const dictionary=new Set([...allWords].filter(valid));
+const categoryWords=Object.fromEntries(Object.entries(cfg.tags).map(([id,t])=>[id,t.split(/\s+/).filter(w=>dictionary.has(w)&&area2(w)<40)]));
+const tagToGroup={果物:'fruit',野菜:'vegetable',植物:'vegetable',魚:'fish',魚介:'fish',生き物:'animal',動物:'animal',雑貨:'goods',道具:'goods',日用品:'goods',衣類:'goods'};
+for(const item of [...(window.MS_EXTRA_WORDS||[]),...(overrides.words||[])]){
+ if(!item||typeof item!=='object'||!dictionary.has(item.word)||scoreSafe(item.word)>=20)continue;
+ for(const tag of item.tags||[]){const group=tagToGroup[tag]||tag;if(categoryWords[group]&&!categoryWords[group].includes(item.word))categoryWords[group].push(item.word);}
+}
+function scoreSafe(w){return area2(w)/2;}
+const person=id=>cfg.places.find(p=>p.id===id);const PIDS=cfg.places.map(p=>p.id);
+const exam=[...cfg.tutorial,cfg.randomizer,...cfg.places.filter(p=>p.first).map(p=>p.first)];
+const assertions=[];
+for(const q of exam){if(!valid(q.enemy)) assertions.push('invalid enemy '+q.enemy);for(const w of q.options)if(!valid(w))assertions.push('invalid option '+w);if(q.options.every(w=>area2(w)<=area2(q.enemy)))assertions.push('no winning option '+q.enemy);}
+if(assertions.length)console.error('RPG data validation:',assertions);
+const fixed={veg:cfg.places[0].first,fish:cfg.places[1].first,goods:cfg.places[3].first,print:cfg.places[4].first};
+const pair=w=>[w.slice(0,2),w.slice(1,3)];
+const sharePair=(a,b)=>pair(a).some(p=>pair(b).includes(p));
+const fixedQuery=(id)=>{const q=fixed[id];return q?{...q,id:'FIRST-'+id,place:id}:null;};
+const bank={veg:[],fish:[],animal:[],goods:[],print:[]};
+// Existing hand-curated B/C questions are retained whenever they fit their actual location.
+const baseQuestions=new Map((window.MS_QUESTIONS||[]).map(q=>[q.id,q]));
+(overrides.questions||[]).forEach(q=>{if(q?.id)baseQuestions.set(q.id,q);});
+for(const q of baseQuestions.values()){
+ if(overrides.disabledIds?.includes(q.id)||q.status==='不採用')continue;
+ const ws=[q.enemy,q.win,q.draw,q.lose];if(ws.some(w=>!valid(w))||new Set(ws).size!==4||area2(q.enemy)===0||area2(q.win)<=area2(q.enemy)||area2(q.draw)!==area2(q.enemy)||area2(q.lose)>=area2(q.enemy))continue;
+ const matching=[];
+ if(q.genre==='B'){
+  if(ws.every(w=>categoryWords.fruit.includes(w)||categoryWords.vegetable.includes(w))){const fam=ws.every(w=>categoryWords.fruit.includes(w))?'fruit':ws.every(w=>categoryWords.vegetable.includes(w))?'vegetable':null;if(fam)matching.push('veg');}
+  if(ws.every(w=>categoryWords.fish.includes(w)))matching.push('fish');
+  if(ws.every(w=>categoryWords.animal.includes(w)))matching.push('animal');
+  if(ws.every(w=>categoryWords.goods.includes(w)))matching.push('goods');
+ }
+ if(q.genre==='C'&&ws.some(w=>ws.every(t=>sharePair(t,w)))){
+  const common=pair(ws[0]).find(p=>ws.every(w=>pair(w).includes(p)));
+  if(common)matching.push('print');
+ }
+ for(const id of matching)bank[id].push({id:q.id,enemy:q.enemy,options:[q.win,q.draw,q.lose],place:id});
+}
+const addGenerated=(id,group,limit=24)=>{
+ const arr=[...new Set(group)].filter(w=>valid(w)&&score(w)<20), used=new Set(bank[id].map(q=>q.enemy));
+ for(const enemy of shuffle(arr.filter(w=>score(w)>0))){if(bank[id].length>=limit)break;
+  if(used.has(enemy))continue;
+  const winners=shuffle(arr.filter(w=>w!==enemy&&score(w)>score(enemy)));
+  const others=shuffle(arr.filter(w=>w!==enemy&&w!==winners[0]));
+  if(!winners.length||others.length<2)continue;
+  const options=shuffle([winners[0],...others.slice(0,2)]);
+  bank[id].push({id:'GEN-'+id+'-'+enemy,place:id,enemy,options});used.add(enemy);
+ }
+};
+// Distinct produce groups: one puzzle never mixes fruit and vegetables.
+addGenerated('veg',categoryWords.fruit,12);addGenerated('veg',categoryWords.vegetable,26);
+addGenerated('fish',categoryWords.fish,22);addGenerated('animal',categoryWords.animal,24);addGenerated('goods',categoryWords.goods,24);
+const printWords=[...dictionary].filter(w=>score(w)<20);
+const printPairs=new Map();for(const w of printWords)for(const p of pair(w)){if(!printPairs.has(p))printPairs.set(p,new Set());printPairs.get(p).add(w);}
+for(const [p,g] of printPairs){if(g.size<4||bank.print.length>=26)continue;const arr=[...g];for(const enemy of shuffle(arr.filter(w=>score(w)>0))){let upper=shuffle(arr.filter(w=>score(w)>score(enemy))),rest=shuffle(arr.filter(w=>w!==enemy&&w!==upper[0]));if(upper.length&&rest.length>=2){bank.print.push({id:'GEN-print-'+p+'-'+enemy,enemy,options:shuffle([upper[0],...rest.slice(0,2)]),place:'print',pair:p});break;}}}
+if(bank.print.length<6){for(const q of baseQuestions.values())if(q.genre==='C'&&q.enemy&&q.win&&q.draw&&q.lose&&valid(q.enemy)&&valid(q.win)&&valid(q.draw)&&valid(q.lose)&&area2(q.win)>area2(q.enemy))bank.print.push({id:'BACKUP-'+q.id,enemy:q.enemy,options:[q.win,q.draw,q.lose],place:'print'});}
+const STORE='makesense-rpg-v1';
+const defaultState=()=>({version:1,screen:'intro',step:0,question:null,questionIndex:[],first:{},used:{veg:[],fish:[],animal:[],goods:[],print:[]},visited:[],winsBy:{veg:0,fish:0,animal:0,goods:0,print:0},stars:[],questDone:[],discovered:[],examined:[],compared:[],hintLevel:0,bossLosses:0,bossAttempts:0,bossInput:'',bossMs:60000,bossAt:null,bossRate:0,bossResult:null,pending:null,history:[],cleared:false,clearStats:null,notice:null,lastPlace:null,uiPlace:null,total:0,wins:0,draws:0,losses:0});
+let state;
+try{const d=JSON.parse(localStorage.getItem(STORE)||'null');state=d?.version===1?Object.assign(defaultState(),d):defaultState();}catch{state=defaultState();}
+const persist=()=>{try{localStorage.setItem(STORE,JSON.stringify(state));}catch{}};
+const toast=m=>{const e=$('#toast');e.textContent=m;e.classList.add('toast--show');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('toast--show'),3000);};
+const discover=ws=>{for(const w of ws)if(valid(w)&&!state.discovered.includes(w))state.discovered.push(w);};
+const nameScore=w=>escape(w)+((state.hintLevel>=1||state.examined.includes(w))&&valid(w)?`<span class="word-score">（${score(w)}）</span>`:'');
+const availableQuests=()=>state.cleared?2:state.compared.length>=6?2:state.compared.length>=2?1:0;
+const done=id=>state.questDone.includes(id), starred=id=>state.stars.includes(id);
+function settle(){if(state.bossAt!==null&&state.bossRate>0){const now=Date.now();state.bossMs=Math.max(0,state.bossMs-(now-state.bossAt)*state.bossRate);state.bossAt=now;}}
+function record(enemy,chosen,outcome,who,id){state.total++;state[outcome==='WIN'?'wins':outcome==='DRAW'?'draws':'losses']++;state.history.push({n:state.total,enemy,chosen,outcome,who,id,at:new Date().toISOString()});state.pending={enemy,chosen,outcome,who,id};if(chosen&&valid(chosen))discover([enemy,chosen]);persist();}
+function recordBossLoss(reason){if(state.bossResult)return;state.bossRate=0;state.bossAt=null;state.bossMs=0;state.bossLosses++;state.bossResult='LOSE';record('いろん',reason,'LOSE','異論','BOSS-'+state.bossAttempts);state.screen='result';state.notice='異論に届かなかった。';persist();}
+// A reload or tab close during the boss encounter counts as a timeout, never a fresh 60-second attempt.
+if(state.screen==='boss'||(state.screen==='result'&&state.pending?.who==='異論'&&state.pending?.outcome==='DRAW'))recordBossLoss('時間切れ');
+const tally=()=>`<div class="status-figures"><span>${state.total}<small>戦</small></span><i></i><span>${state.bossAttempts}<small>異論への挑戦</small></span></div>`;
+const btn=(action,label,klass='button--subtle',extra='')=>`<button type="button" class="button ${klass}" data-action="${action}" ${extra}>${label}</button>`;
+const cap=t=>`<div class="micro-label">${t}</div>`;
+function render(){
+ const app=$('#app');const fn={intro:introView,story:storyView,battle:battleView,result:resultView,map:mapView,place:placeView,lab:labView,quests:questsView,boss:bossView,clear:clearView};app.innerHTML=(fn[state.screen]||mapView)();$('#log-count').textContent=state.history.length;$('#book-count').textContent=state.discovered.length;
+ if(state.screen==='boss'){state.bossAt=Date.now();state.bossRate=$('#overlay').open?.2:1;persist();updateClock();}
+ window.scrollTo(0,0);
+}
+function introView(){return `<section class="intro"><div class="intro__eyebrow"><span class="pulse-dot"></span> THREE LETTERS · ONE OBJECTION</div><h1 class="intro__title">MAKE<br><em>SENSE<span>.</span></em></h1><p class="intro__japanese">メイクセンス</p><p class="intro__lead">筋を通すこと。<br>そして、異論を覆すこと。</p><p class="intro__copy">この世界では、すべての言葉に強さがある。<br>だが、誰にも打ち負かせない言葉がある。その名は「異論」。</p><div class="intro__actions">${state.step||state.total?btn('resume','続きから ↗','button--primary button--large'):btn('begin','ゲームを始める ↗','button--primary button--large')}</div><p class="intro__hint">進行状況はこのブラウザに自動保存されます。<br>旧作のセーブデータには影響しません。</p></section>`;}
+function storyView(){const isEnd=state.notice==='explore';if(isEnd)return `<section class="story-page">${cap('A NEW JOURNEY')}<h1>この世界には、<br>まだ知らない言葉がある。</h1><p>言葉を集めるもよし。自分の考えを信じて挑むもよし。<br>研究も依頼も、異論を覆すための必須条件ではありません。</p><p class="story-strong">異論には、いつでも挑戦できます。</p>${btn('map','探索を始める ↗','button--primary button--large')}</section>`;
+ return `<section class="story-page">${cap('PROLOGUE')}<h1>メイクセンス。</h1><p>それは、筋を通すこと。<br>そして、異論を覆すこと。</p><p>この世界では、すべての言葉に強さがある。<br>言葉を交わし、人々は日々勝敗を決めてきた。</p><p>しかし、誰も覆すことのできない言葉がある。<br>その名は、<strong>「異論」</strong>。</p><p class="story-strong">君は、異論を覆すことができるだろうか。</p>${btn('next-story','挑戦する ↗','button--primary button--large')}</section>`;}
+function currentQuestion(){if(state.screen==='battle'&&state.question?.kind==='explore')return state.question;if(state.step<5)return {...cfg.tutorial[state.step],id:'T'+state.step,who:cfg.tutorial[state.step].name,kind:'tutorial'};if(state.step===5)return {...cfg.randomizer,id:'RANDOMIZER',who:'ランダ・マイザ',kind:'randomizer'};return state.question;}
+function startQuestion(id){let q;if(!state.first[id]){q=fixedQuery(id);state.first[id]=true;}if(!q){const available=bank[id].filter(x=>!state.used[id].includes(x.id));if(!available.length)state.used[id]=[];const pool=available.length?available:bank[id];q=pick(pool)||fixedQuery(id);}
+if(!q){toast('この施設の問題を準備中です。');return;}state.used[id].push(q.id);state.question={...q,who:person(id).person,kind:'explore'};state.screen='battle';discover([q.enemy,...q.options]);persist();render();}
+function battleView(){const q=currentQuestion();if(!q)return mapView();const place=state.lastPlace?person(state.lastPlace):null;const choices=state.questionIndex.length===3?state.questionIndex:q.options;
+ const league=q.kind==='tutorial'?`試練 ${state.step+1} / 5`:q.kind==='randomizer'?'予期せぬ挑戦':place?.name||'探索';
+ const line=q.line||place?.line||'';
+ return `<section class="game-view game-view--${(['a','b','c','d'][state.step%4])}"><div class="game-topline"><div class="breadcrumb">MAKE SENSE <span>／</span> ${escape(league)}</div>${tally()}</div><div class="battle-grid"><aside class="enemy-panel"><div class="enemy-panel__mark">CHALLENGER</div><div class="rpg-sigil">${q.kind==='tutorial'?['Ⅰ','Ⅱ','Ⅲ','Ⅳ','Ⅴ'][state.step]:q.kind==='randomizer'?'✦':escape(place?.icon||'✧')}</div><p class="enemy-panel__role">${escape(league)}</p><h1>${escape(q.who)}</h1><p class="enemy-panel__line">${escape(line)}</p><p class="enemy-panel__footer">${q.kind==='explore'?'現在の連勝：'+state.winsBy[state.lastPlace]+' / 5':q.kind==='tutorial'?'勝利して次の試練へ':'今までの経験を信じて。'}</p></aside><article class="challenge-panel"><div class="challenge-panel__top">${cap('WORD BATTLE')}<span class="challenge-panel__seq">${escape(q.id)}</span></div><p class="challenge-panel__prompt">相手の言葉より、<span>強い言葉</span>を選べ。</p><div class="enemy-word">${nameScore(q.enemy)}</div><div class="choice-list">${choices.map((w,i)=>`<button class="choice" data-action="answer" data-word="${escape(w)}" data-light="${escape(w)}"><span class="choice__index">0${i+1}</span><span class="choice__word">${nameScore(w)}</span><span class="choice__arrow">↗</span></button>`).join('')}</div><p class="challenge-panel__foot">選択すると勝敗が確定します。対戦した言葉はログに残ります。</p></article></div>${state.hintLevel===2?kanaChart(null,true):''}${q.kind==='explore'?`<div class="rpg-under">${btn('map','勝負を中断してマップへ')}</div>`:''}</section>`;}
+function outcome(enemy,chosen){return area2(chosen)>area2(enemy)?'WIN':area2(chosen)===area2(enemy)?'DRAW':'LOSE';}
+function answer(w){const q=currentQuestion();if(!q||!q.options.includes(w))return;const result=outcome(q.enemy,w);record(q.enemy,w,result,q.who,q.id);state.pending={...state.pending,kind:q.kind,place:state.lastPlace,line:result==='WIN'?q.winLine||'':null};if(q.kind==='randomizer'){state.randomizerDone=true;state.randomizerResult=result;}if(q.kind==='explore'){let p=state.lastPlace;state.winsBy[p]=result==='WIN'?state.winsBy[p]+1:0;if(state.winsBy[p]>=5&&!starred(p)){state.stars.push(p);state.notice='star';}if(!state.visited.includes(p))state.visited.push(p);if(state.visited.length>=3&&!state.labUnlocked)state.labUnlocked=true;}
+state.screen='result';state.questionIndex=[];persist();render();}
+function resultView(){const p=state.pending||{};const boss=p.who==='異論';const outcomeLabel=p.outcome||'LOSE';const text=boss?(p.outcome==='WIN'?'君は、異論を覆した。':p.outcome==='DRAW'?'異論と互角。残り時間でもう一度。':'君は異論を覆すことができなかった。') : p.kind==='randomizer'?({WIN:'へえ、僕の負けか。それなら、異論にも挑んでみる？',DRAW:'引き分けか。……面白いね。ほかの人たちとも戦ってみたら？',LOSE:'残念。僕の勝ちだね。この先には、僕よりも強い相手がいるよ。'}[outcomeLabel]):p.kind==='tutorial'?(outcomeLabel==='WIN'?p.line:'もう一度、同じ相手に挑戦しよう。'):({WIN:'見事な勝利。',DRAW:'互角の勝負だった。',LOSE:'新しい結果が、次の手掛かりになる。'}[outcomeLabel]);
+ const footer=state.notice==='star'&&p.kind==='explore'?'<p class="star-earned">★ 5連勝達成！ ★ を獲得しました。</p>':'';
+ let actions='';if(boss&&outcomeLabel==='DRAW'){actions=btn('boss-draw','残り時間で再入力 ↗','button--primary');}
+ else if(boss&&outcomeLabel==='LOSE'){actions=btn('explore-intro','探索へ進む ↗','button--primary');}
+ else if(boss&&outcomeLabel==='WIN'){actions=btn('clear','クリア画面へ ↗','button--primary');}
+ else if(p.kind==='tutorial'){actions=btn('next-tutorial',outcomeLabel==='WIN'?'次の相手へ ↗':'もう一度挑戦 ↗','button--primary');}
+ else if(p.kind==='randomizer'){actions=btn(outcomeLabel==='WIN'?'first-boss':'explore-intro',outcomeLabel==='WIN'?'異論に挑む ↗':'探索へ進む ↗','button--primary');}
+ else actions=btn('next-explore','同じ施設で続ける ↗','button--primary')+btn('map','探索マップへ');
+ return `<section class="outcome-view outcome-view--${outcomeLabel.toLowerCase()}"><div class="outcome-view__top">BATTLE RESULT</div><div class="outcome-view__seal">${outcomeLabel==='WIN'?'✧':outcomeLabel==='DRAW'?'＝':'×'}</div><div class="outcome-view__status">${outcomeLabel}</div><h1>${outcomeLabel==='WIN'?'勝利。':outcomeLabel==='DRAW'?'互角。':'届かなかった。'}</h1><p class="outcome-view__desc">${escape(text)}</p><div class="outcome-compare"><div><small>相手の言葉</small><strong>${nameScore(p.enemy)}</strong></div><span class="outcome-compare__versus">VS</span><div><small>君の言葉</small><strong>${p.chosen==='時間切れ'?escape(p.chosen):nameScore(p.chosen)}</strong></div></div>${boss&&outcomeLabel==='DRAW'?`<p class="timer-inline">残り <strong data-clock>${fmtClock()}</strong></p>`:''}${footer}<div class="outcome-view__actions">${actions}</div>${p.kind==='randomizer'&&outcomeLabel!=='WIN'?'<p class="outcome-view__foot">この世界には、君の知らない言葉が数多く存在する。</p>':''}${boss&&outcomeLabel==='LOSE'?'<p class="outcome-view__foot">この世界には、君の知らない言葉が数多く存在する。</p>':''}${state.hintLevel===2&&!boss?kanaChart(p.chosen,true):''}</section>`;}
+function mapView(){const lab=!!state.labUnlocked;return `<section class="rpg-page">${cap(state.cleared?'AFTER THE END':'EXPLORE THE WORLD')}<div class="rpg-heading"><div><h1>探索マップ</h1><p>言葉を集めるも、研究するも、異論に挑むも自由。</p></div><div class="rpg-mini-stats"><strong>${state.stars.length} / 5</strong><span>獲得した★</span></div></div><div class="location-grid">${cfg.places.map(p=>`<button class="location-card" data-action="place" data-id="${p.id}"><span class="location-icon">${p.icon}</span><span class="location-title">${p.name}</span><span class="location-meta">${starred(p)?'★ 獲得済み':state.winsBy[p.id]+' / 5 連勝'}${done(p.id)?' · 依頼達成':''}</span></button>`).join('')}<button class="location-card ${lab?'':'location-card--locked'}" data-action="lab-gate"><span class="location-icon">${lab?'⌬':'？'}</span><span class="location-title">${lab?'学者の研究室':'？？？'}</span><span class="location-meta">${lab?'自由比較と数値解析':'まだ行き方が分からない'}</span></button></div><div class="rpg-primary-action">${btn('boss-start','異論に挑戦 ↗','button--primary button--large')}${state.cleared?btn('clear','クリアポストを見る'):''}</div><p class="rpg-footnote">研究やサブクエストはクリアに必須ではありません。異論にはいつでも挑戦できます。</p></section>`;}
+function placeView(){let p=person(state.uiPlace)||cfg.places[0],level=availableQuests();return `<section class="rpg-page narrow">${btn('map','← 探索マップへ')}${cap('EXPLORE · '+p.tag)}<div class="place-hero"><span class="place-icon">${p.icon}</span><div><h1>${p.name}</h1><h2>${p.person}</h2><p>「${p.line}」</p></div></div><div class="panel"><div class="panel-top"><h3>言葉の勝負</h3><span>${starred(p.id)?'★ 獲得済み':state.winsBy[p.id]+' / 5 連勝'}</span></div><div class="win-track">${[0,1,2,3,4].map(i=>`<i class="${starred(p.id)||i<state.winsBy[p.id]?'lit':''}"></i>`).join('')}</div><p>5連勝すると★を獲得。一度獲得した★は失われません。</p>${btn('fight','対戦する ↗','button--primary','data-id="'+p.id+'"')}</div><div class="panel"><div class="panel-top"><h3>住人からの依頼</h3><span>${done(p.id)?'達成済み':level>=(p.id==='goods'||p.id==='print'?2:1)?'受注可能':'未解放'}</span></div><p>${level>=(p.id==='goods'||p.id==='print'?2:1)||done(p.id)?escape(p.quest.title):'学者の研究が進むと解放されます。'}</p>${btn('quest-open','依頼を見る ↗',done(p.id)?'button--subtle':'button--primary','data-id="'+p.id+'" '+(level<(p.id==='goods'||p.id==='print'?2:1)&&!done(p.id)?'disabled':''))}</div></section>`;}
+function queryChoice(id){const used=state.used[id]||[];const q=bank[id];return used.length?`問題 ${used.length} / ${q.length}（再出題あり）`:'';}
+function labView(){if(!state.labUnlocked&&!state.cleared)return mapView();const lvl=state.compared.length;return `<section class="rpg-page narrow">${btn('map','← 探索マップへ')}${cap('THE SCHOLAR')}<h1>学者の研究室</h1><p>「この装置を使えば、君が見つけた言葉同士の強さを比較できる。何を調べるかは君の自由だ。」</p><div class="panel"><div class="panel-top"><h3>自由比較装置</h3><span>${lvl}組 調査済み</span></div><p>図鑑に登録済みの二語を選ぼう。勝敗に関係なく、異なる組み合わせが研究に加算される。</p><div class="word-pair"><select id="lab-left" aria-label="比較する一つ目の言葉">${wordOptions()}</select><span>VS</span><select id="lab-right" aria-label="比較する二つ目の言葉">${wordOptions(1)}</select></div>${btn('compare','比較する ↗','button--primary')}${state.labComparison?`<div class="lab-result"><strong>${escape(state.labComparison.result)}</strong><span>${nameScore(state.labComparison.a)}　/　${nameScore(state.labComparison.b)}</span></div>`:''}</div><div class="panel"><div class="panel-top"><h3>数値解析</h3><span>${lvl>=6||state.cleared?'使用可能':`${lvl} / 6組`}</span></div>${lvl>=6||state.cleared?`<p>解析した言葉は、以降どの画面でも強さが表示されます。</p><div class="word-pair"><select id="analyse-word" aria-label="解析する言葉">${wordOptions()}</select></div>${btn('analyse','強さを解析する ↗','button--primary')}<p>解析済み：${state.examined.length}語</p>`:'<p>異なる6組を比較すると数値解析が使えるようになります。</p>'}</div><p class="rpg-footnote">研究は任意です。異論にはいつでも挑戦できます。</p></section>`;}
+function wordOptions(offset=0){const d=[...state.discovered].sort((a,b)=>a.localeCompare(b,'ja'));return d.map((w,i)=>`<option value="${w}" ${i===offset?'selected':''}>${escape(w)}${state.hintLevel||state.examined.includes(w)?'（'+score(w)+'）':''}</option>`).join('');}
+const questLevel=p=>p.id==='goods'||p.id==='print'?2:1;
+function questCandidates(q,w){if(!valid(w)||w===q.base||w===q.low||w===q.high)return false;const v=score(w),base=score(q.base);
+ if(q.category&&!categoryWords[q.category]?.includes(w))return false;
+ if(q.type==='higher')return v>base;
+ if(q.type==='lower')return v<base;
+ if(q.type==='equal')return v===base;
+ if(q.type==='double')return v===base*2;
+ if(q.type==='between')return v>score(q.low)&&v<score(q.high)&&w.includes(q.pair);
+ return false;
+}
+function questsView(){const p=person(state.uiPlace)||cfg.places[0];if(availableQuests()<questLevel(p)&&!done(p.id))return placeView();let q=p.quest;return `<section class="rpg-page narrow">${btn('place','← '+p.name+'へ','button--subtle','data-id="'+p.id+'"')}${cap('SIDE QUEST · '+(questLevel(p)===1?'初級':'上級'))}<h1>${q.title}</h1><div class="panel"><h3>${p.person}の依頼</h3><p>「${q.text}」</p>${done(p.id)?'<div class="quest-success">✓ 依頼達成済み。ありがとう！</div>':`<label class="select-label" for="quest-word">図鑑から回答する</label><select class="full-select" id="quest-word"><option value="">言葉を選択してください</option>${[...state.discovered].sort((a,b)=>a.localeCompare(b,'ja')).map(w=>`<option value="${w}">${escape(w)}${state.hintLevel||state.examined.includes(w)?'（'+score(w)+'）':''}</option>`).join('')}</select>${btn('submit-quest','回答する ↗','button--primary')}<p class="rpg-footnote">※進行度合いによっては、現在の図鑑に正解となる言葉がなく、達成できない場合があります。</p>`}</div><div class="rpg-primary-action">${btn('map','探索マップへ')}</div></section>`;}
+const fmtClock=()=>{const sec=Math.max(0,state.bossMs)/1000;return `${String(Math.floor(sec/60)).padStart(2,'0')}:${(sec%60).toFixed(1).padStart(4,'0')}`;};
+function kanaChart(active,staticOnly=false){const chars=active?[...active]:[];return `<div class="kana-board ${staticOnly?'kana-board--reference':''}"><div class="kana-grid">${[...Array(5)].flatMap((_,y)=>ROWS.map((r,i)=>ROWS[10-i][y]?`<${staticOnly?'span':'button type="button"'} class="${staticOnly?'kana-reference':'kana-button'} ${chars.includes(ROWS[10-i][y])?'kana-lit':''}" ${staticOnly?'':'data-action="kana" data-word="'+ROWS[10-i][y]+'"'}>${ROWS[10-i][y]}</${staticOnly?'span':'button'}>`:`<span class="kana-blank"></span>`)).join('')}</div></div>`;}
+function bossView(){const bossLine=state.bossIntro==='direct'?'ランダ・マイザを倒したというのは、君のことか。<br>ならば、試してみるといい。君の言葉で、この異論を覆せるか。':state.bossIntro==='again'?'また来たのか。<br>以前とは違う答えを、見つけられたのかな？':'君が、新たな挑戦者か。<br>ここまでに何を得たのか、その言葉で示してみるといい。';return `<section class="boss-view">${cap('THE FINAL OBJECTION')}<div class="boss-view__center"><div class="boss-view__orb"><span>異論</span></div><h1>異論を覆せ。</h1><p>${bossLine}</p><div class="boss-clock"><small>残り時間</small><strong data-clock>${fmtClock()}</strong></div><div class="boss-slots">${[0,1,2].map(i=>`<span class="boss-slot ${state.bossInput[i]?'boss-slot--filled':''}">${state.bossInput[i]||'・'}</span>`).join('')}</div><div class="boss-controls">${btn('boss-back','一文字戻す','button--subtle button--small')}${btn('boss-erase','消去','button--subtle button--small')}</div>${kanaChart(null)}${btn('boss-submit','この言葉で挑む ↗','button--primary boss-submit',state.bossInput.length!==3?'disabled':'')}<p class="boss-view__hint">ひらがな3文字の実在語を入力。辞書にない言葉は判定されません。</p></div></section>`;}
+function shareUrl(){
+ const url=String(overrides.announcementUrl||'').trim();
+ if(/^https:\/\/(?:www\.)?(?:x\.com|twitter\.com)\/[a-zA-Z0-9_]+\/status\/\d+(?:\/)?(?:\?[^\s#]*)?$/.test(url))return url;
+ if(/^https?:$/.test(location.protocol)&&!['localhost','127.0.0.1'].includes(location.hostname)&&!location.hostname.endsWith('.test'))return location.origin+location.pathname;
+ return '';
+}
+function shareText(){const stars='★'.repeat(state.stars.length),prefix=stars?stars+' ':'';const suffix=stars?' '+stars:'';const n=state.clearStats?.total||state.total, attempts=state.clearStats?.bossAttempts||state.bossAttempts;return `${prefix}『メイクセンス』を${n}戦・異論${attempts}回目の挑戦でクリア！${suffix}\n\n${state.questDone.length===5?'色んな人たちを助けながら、\n':''}異論を覆しました。\n\n#メイク_センス\n${shareUrl()}`.trim();}
+function clearView(){return `<section class="clear-view">${cap('GAME CLEAR')}<div class="clear-view__spark">✧</div><h1>異論を、覆した。</h1><p>メイクセンス。それは、筋を通すこと。そして、異論を覆すこと。</p><div class="clear-view__metrics"><div><strong>${state.clearStats?.total||state.total}<small>戦</small></strong><span>クリア時の対戦数</span></div><div><strong>${state.clearStats?.bossAttempts||state.bossAttempts}<small>回</small></strong><span>異論への挑戦</span></div></div><p class="star-earned">${'★'.repeat(state.stars.length)||'☆'} ${state.stars.length} / 5</p>${state.questDone.length===5?'<p class="quest-success">色んな人たちを助けながら、異論を覆しました。</p>':''}<div class="share-preview">${escape(shareText()).replace(/\n/g,'<br>')}</div><div class="clear-view__actions">${btn('share','Xに投稿する ↗','button--primary')}${btn('copy','投稿文をコピー')}${btn('map','探索を続ける')}</div><p class="clear-view__spoiler">クリア後も★・サブクエストを集められます。投稿文は後からいつでも更新できます。</p></section>`;}
+function fallbackCopy(value){try{const t=document.createElement('textarea');t.value=value;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();const ok=document.execCommand('copy');t.remove();toast(ok?'投稿文をコピーしました。':'投稿文をコピーできませんでした。');}catch{toast('投稿文をコピーできませんでした。');}}
+function showOverlay(kind){const root=$('#overlay-body');if(kind==='book'){root.innerHTML=`${cap('WORD COLLECTION')}<h2 id="overlay-title">言葉の図鑑</h2><p class="overlay-desc">登場した言葉が自動で登録されます。数値が表示されるのは解析済みの言葉だけ。</p><input class="search-input" id="book-search" placeholder="言葉を検索" autocomplete="off"><div class="word-collection" id="book-list"></div>`;renderBook('');}
+ else if(kind==='log'){root.innerHTML=`${cap('BATTLE ARCHIVE')}<h2 id="overlay-title">対戦ログ</h2><div id="log-timer" class="timer-inline">${state.screen==='boss'?'残り <strong data-clock>'+fmtClock()+'</strong>':''}</div><div class="log-summary"><div><b>${state.wins}</b><small>WIN</small></div><div><b>${state.draws}</b><small>DRAW</small></div><div><b>${state.losses}</b><small>LOSE</small></div><div><b>${state.total}</b><small>計</small></div></div><div class="log-list">${[...state.history].reverse().map(h=>`<div class="log-entry"><div class="log-entry__index">#${h.n}<br><span>${escape(h.who)}</span></div><div class="log-entry__words">${nameScore(h.enemy)} <i>VS</i> ${valid(h.chosen)?nameScore(h.chosen):escape(h.chosen)}</div><div class="log-entry__outcome log-entry__outcome--${h.outcome.toLowerCase()}">${h.outcome}</div></div>`).join('')||'<p class="overlay-desc">対戦記録はまだありません。</p>'}</div>`;}
+ else{root.innerHTML=`${cap('HOW TO PLAY')}<h2 id="overlay-title">遊び方</h2><div class="rules-prose"><p>相手の3文字より強い言葉を選んで勝負。どの言葉が勝つかは、実際の対戦で確かめよう。</p><p>最初の5戦は勝つまで再挑戦。探索に入った後は、勝敗に関係なく自由に巡れます。選ばなかった選択肢も図鑑に登録されます。</p><p>学者の比較装置や住人からの依頼は、異論を覆すための任意の手段です。</p><p>各施設で5連勝すると★を獲得。異論にはいつでも挑戦でき、60秒以内に強い言葉を示せばクリアです。</p></div>`;}
+ if(kind==='log'&&(state.screen==='boss'||(state.screen==='result'&&state.pending?.who==='異論'&&state.pending?.outcome==='DRAW')))setBossRate(.2);$('#overlay').showModal();}
+function renderBook(q){const el=$('#book-list');if(!el)return;const words=[...state.discovered].sort((a,b)=>a.localeCompare(b,'ja')).filter(w=>w.includes(q));el.innerHTML=words.map(w=>`<span>${nameScore(w)}</span>`).join('')||'<p class="overlay-desc">該当する言葉はありません。</p>';}
+function setBossRate(r){settle();state.bossRate=r;state.bossAt=Date.now();persist();if(state.bossMs<=0)recordBossLoss('時間切れ');}
+function beginBoss(){state.bossIntro=state.bossAttempts>0?'again':state.randomizerResult==='WIN'?'direct':'explore';state.screen='boss';state.bossInput='';state.bossResult=null;state.bossMs=60000;state.bossAt=Date.now();state.bossRate=1;state.bossAttempts++;persist();render();}
+function bossInputChar(ch){if(state.bossInput.length>=3)return;state.bossInput+=ch;persist();renderBossInput();}
+function renderBossInput(){if(state.screen!=='boss')return;document.querySelectorAll('.boss-slot').forEach((el,i)=>{el.textContent=state.bossInput[i]||'・';el.classList.toggle('boss-slot--filled',!!state.bossInput[i]);});const submit=$('[data-action="boss-submit"]');if(submit)submit.disabled=state.bossInput.length!==3;}
+function bossSubmit(){settle();if(state.bossMs<=0){recordBossLoss('時間切れ');render();return;}const w=state.bossInput;if(!valid(w)){toast('清音のひらがな3文字で入力してください。');return;}if(!dictionary.has(w)){toast('辞書に登録されていない言葉です。時間は進みます。');return;} let res=outcome('いろん',w);record('いろん',w,res,'異論','BOSS-'+state.bossAttempts);state.pending.kind='boss';state.bossInput='';state.bossRate=res==='DRAW'?1:0;state.bossAt=res==='DRAW'?Date.now():null;state.bossResult=res==='DRAW'?null:res;
+ if(res==='WIN'){state.cleared=true;state.clearStats=state.clearStats||{total:state.total,bossAttempts:state.bossAttempts};}
+ if(res==='LOSE')state.bossLosses++;
+ state.screen='result';persist();render();}
+function checkHintOffer(){if(state.bossLosses>=8&&state.hintLevel<2)toast('ヒント「天啓」が解放されました。図鑑から切り替えできます。');else if(state.bossLosses>=4&&state.hintLevel<1)toast('全単語の数値表示が解放されました。図鑑から切り替えできます。');}
+function nextTutorial(){if(state.pending?.outcome==='WIN')state.step++;state.pending=null;state.notice=null;if(state.step===5){state.questionIndex=shuffle(cfg.randomizer.options);state.screen='battle';discover([cfg.randomizer.enemy,...cfg.randomizer.options]);}else{state.questionIndex=shuffle(cfg.tutorial[state.step].options);state.screen='battle';discover([cfg.tutorial[state.step].enemy,...cfg.tutorial[state.step].options]);}persist();render();}
+function enterMap(){if(!state.labUnlocked&&state.visited.length>=3)state.labUnlocked=true;state.screen='map';state.notice=null;persist();render();}
+const overlay=$('#overlay');overlay.addEventListener('close',()=>{if((state.screen==='boss'||(state.screen==='result'&&state.pending?.who==='異論'&&state.pending?.outcome==='DRAW'))&&state.bossRate>0){setBossRate(1);}});
+document.addEventListener('click',e=>{
+ const g=e.target.closest('[data-global]');if(g){const x=g.dataset.global;if(x==='close'){overlay.close();return;}if(x==='book'||x==='log'||x==='rules'){if(!overlay.open)showOverlay(x);return;}if(x==='reset'){if(confirm('RPG版のセーブデータをすべて消去しますか？\n旧作のセーブデータは消えません。')){localStorage.removeItem(STORE);location.reload();}return;}if(x==='home'){if(state.screen==='boss'){toast('異論戦の中断は敗北になります。');return;}state.resumeScreen=state.screen;state.screen=state.step<6&&!state.randomizerDone?'intro':'map';persist();render();return;}}
+ const b=e.target.closest('[data-action]');if(!b)return;const a=b.dataset.action,id=b.dataset.id;
+ if(a==='begin'){state.screen='story';state.notice=null;persist();render();}
+ else if(a==='resume'){if(state.step<6&&!state.randomizerDone){state.screen=state.resumeScreen==='result'?'result':'battle';if(state.screen==='battle'&&!state.questionIndex.length)state.questionIndex=shuffle(currentQuestion().options);}else enterMap();state.resumeScreen=null;persist();render();}
+ else if(a==='next-story'){state.screen='battle';state.step=0;state.questionIndex=shuffle(cfg.tutorial[0].options);discover([cfg.tutorial[0].enemy,...cfg.tutorial[0].options]);persist();render();}
+ else if(a==='answer')answer(b.dataset.word);
+ else if(a==='next-tutorial')nextTutorial();
+ else if(a==='explore-intro'){checkHintOffer();state.screen='story';state.notice='explore';persist();render();}
+ else if(a==='map')enterMap();
+ else if(a==='place'){state.uiPlace=id||state.uiPlace;state.screen='place';persist();render();}
+ else if(a==='fight'){state.lastPlace=id;state.uiPlace=id;startQuestion(id);}
+ else if(a==='next-explore'){state.notice=null;startQuestion(state.lastPlace);}
+ else if(a==='lab-gate'){if(state.labUnlocked||state.cleared){state.screen='lab';persist();render();}else toast('まだ行き方が分からない。各地を巡ってみよう。');}
+ else if(a==='quest-open'){state.uiPlace=id;state.screen='quests';persist();render();}
+ else if(a==='submit-quest'){const p=person(state.uiPlace),w=$('#quest-word')?.value;if(!w){toast('回答する言葉を選んでください。');return;}if(questCandidates(p.quest,w)){if(!done(p.id))state.questDone.push(p.id);persist();toast('依頼達成！ '+p.person+'から感謝された。');render();}else toast('条件を満たしていないようだ。別の言葉を探してみよう。');}
+ else if(a==='compare'){const x=$('#lab-left').value,y=$('#lab-right').value;if(!x||!y||x===y){toast('異なる二つの言葉を選んでください。');return;}let before=state.compared.length;const key=[x,y].sort().join('|');if(!state.compared.includes(key))state.compared.push(key);state.labComparison={a:x,b:y,result:outcome(y,x)};persist();render();if(before<2&&state.compared.length>=2)toast('初級サブクエストが解放されました。');if(before<6&&state.compared.length>=6)toast('数値解析と上級サブクエストが解放されました。');}
+ else if(a==='analyse'){const w=$('#analyse-word').value;if(w&&!state.examined.includes(w))state.examined.push(w);persist();render();toast(`${w}の強さは ${score(w)}。以後、数値が表示されます。`);}
+ else if(a==='first-boss'||a==='boss-start'){if(state.screen==='boss')return;beginBoss();}
+ else if(a==='boss-draw'){if(state.bossMs<=0){recordBossLoss('時間切れ');render();return;}state.screen='boss';state.bossResult=null;state.bossInput='';persist();render();}
+ else if(a==='kana'){bossInputChar(b.dataset.word);}
+ else if(a==='boss-back'){state.bossInput=state.bossInput.slice(0,-1);persist();renderBossInput();}
+ else if(a==='boss-erase'){state.bossInput='';persist();renderBossInput();}
+ else if(a==='boss-submit')bossSubmit();
+ else if(a==='clear'){state.screen='clear';persist();render();}
+ else if(a==='copy'){const value=shareText();if(navigator.clipboard?.writeText){navigator.clipboard.writeText(value).then(()=>toast('投稿文をコピーしました。')).catch(()=>fallbackCopy(value));}else fallbackCopy(value);}
+ else if(a==='share'){window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(shareText()),'_blank','noopener,noreferrer');}
+});
+document.addEventListener('input',e=>{if(e.target.id==='book-search')renderBook(e.target.value);});
+document.addEventListener('pointerover',e=>{const el=e.target.closest('[data-light]');if(el&&state.hintLevel===2){const grid=$('.kana-board--reference');if(grid){grid.querySelectorAll('.kana-reference').forEach(x=>x.classList.toggle('kana-lit',[...el.dataset.light].includes(x.textContent)));}}});
+document.addEventListener('keydown',e=>{if(state.screen==='boss'&&!overlay.open){if(e.key==='Backspace'){e.preventDefault();state.bossInput=state.bossInput.slice(0,-1);renderBossInput();persist();}else if(e.key==='Enter'&&state.bossInput.length===3){e.preventDefault();bossSubmit();}else if(KANA.has(e.key)){bossInputChar(e.key);}}});
+let tickMs=0;setInterval(()=>{if(state.screen!=='boss'&&!(state.screen==='result'&&state.pending?.who==='異論'&&state.pending?.outcome==='DRAW'))return;if(state.bossRate<=0)return;settle();if(state.bossMs<=0){recordBossLoss('時間切れ');if(overlay.open)overlay.close();checkHintOffer();render();return;}updateClock();if(Date.now()-tickMs>950){persist();tickMs=Date.now();}},80);
+function updateClock(){document.querySelectorAll('[data-clock]').forEach(el=>{el.textContent=fmtClock();el.classList.toggle('clock--urgent',state.bossMs<=10000);});}
+// Hint controls are intentionally offered, never automatically applied.
+function hintView(){const max=state.bossLosses>=8?2:state.bossLosses>=4?1:0;return `<div class="hint-actions"><span>異論への累計敗北：${state.bossLosses}回</span><select id="hint-level"><option value="0" ${state.hintLevel===0?'selected':''}>通常表示</option>${max>=1?`<option value="1" ${state.hintLevel===1?'selected':''}>全数値表示</option>`:''}${max>=2?`<option value="2" ${state.hintLevel===2?'selected':''}>天啓</option>`:''}</select></div>`;}
+const origShow=showOverlay;showOverlay=function(kind){origShow(kind);if(kind==='book'){$('#overlay-body').insertAdjacentHTML('beforeend',`<div class="panel hint-panel"><h3>異論戦のヒント</h3><p>4敗で全数値表示、8敗で「天啓」が解放。どちらも任意で切り替えられます。</p>${hintView()}</div>`);}};
+document.addEventListener('change',e=>{if(e.target.id==='hint-level'){state.hintLevel=Number(e.target.value)||0;persist();const search=$('#book-search');if(search)renderBook(search.value);toast('ヒント表示を切り替えました。');}});
+// Lab unlock is earned in exploration, even when visiting locations in a different order.
+render();
+window.MSRPG_TEST={score,area2,valid,bank,categoryWords,questCandidates,cfg};
+})();
+
+</script>
+</body></html>
