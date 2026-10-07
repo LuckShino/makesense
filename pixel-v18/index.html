@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f5ead1">
+<title>MAKE SENSE V18</title>
+<style>
+body{margin:0;background:#f4ead1;font-family:system-ui,-apple-system,"Hiragino Sans","Yu Gothic",sans-serif;color:#5b4a3d;display:grid;place-items:center;min-height:100vh}
+#boot{padding:24px;text-align:center}
+</style>
+</head>
+<body>
+<div id="boot">ことばの街を読み込み中…</div>
+<script src="town-upgrades.js"></script>
+<script>
+(async()=>{
+  const files=["../pixel-v16/chunks/000.txt","../pixel-v16/chunks/001.txt","../pixel-v16/chunks/002.txt","../pixel-v16/chunks/003.txt","../pixel-v16/chunks/004.txt","../pixel-v16/chunks/005.txt","../pixel-v16/chunks/006.txt","../pixel-v16/chunks/007.txt","../pixel-v16/chunks/008.txt","../pixel-v16/chunks/009.txt","../pixel-v16/chunks/010.txt","../pixel-v16/chunks/011.txt"];
+  const [characters,bossWords,...parts]=await Promise.all([
+    fetch("../pixel-v17/characters.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error("characters.json "+r.status);return r.json()}),
+    fetch("../pixel-v17/boss-words.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error("boss-words.json "+r.status);return r.json()}),
+    ...files.map(f=>fetch(f,{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error(f+" "+r.status);return r.text()}))
+  ]);
+  let html=parts.join("");
+  const marker="window.MS_INLINE_ART=";
+  const start=html.indexOf(marker);
+  const end=html.indexOf(";</scr"+"ipt>",start);
+  if(start<0||end<0)throw new Error("MS_INLINE_ART not found");
+  const jsonStart=start+marker.length;
+  const art=JSON.parse(html.slice(jsonStart,end));
+  for(const [key,value] of Object.entries(characters)) art[key]=value;
+  html=html.slice(0,jsonStart)+JSON.stringify(art)+html.slice(end);
+  html=html.replace("<title>メイクセンス | MAKE SENSE</title>","<title>メイクセンス | MAKE SENSE V18</title>");
+  const characterFitCss=`<style id="v17-character-fit">
+.pixel-battle .pixel-battle__room{min-height:340px;}
+.pixel-battle .pixel-battle__room .pixel-battle__portrait{
+  width:min(80%,240px);height:calc(100% - 56px);bottom:16px;
+  left:50%;transform:translateX(-50%);
+}
+.pixel-battle .pixel-battle__portrait .pixel-character,
+.pixel-shop-scene .pixel-shop-scene__keeper .pixel-character,
+.randa-encounter__stage .randa-encounter__sprite .pixel-character{
+  width:100%;height:100%;max-width:100%;max-height:100%;
+  object-fit:contain;object-position:center bottom;
+}
+.pixel-shop-scene .pixel-shop-scene__keeper{
+  width:min(42%,224px);height:calc(100% - 64px);bottom:16px;left:50%;
+}
+.pixel-lab-scene>.pixel-character{
+  width:min(40%,160px);height:calc(100% - 64px);bottom:16px;
+  left:50%;transform:translateX(-50%);object-fit:contain;object-position:center bottom;
+}
+.randa-encounter__stage .randa-encounter__sprite{
+  width:min(72%,220px);height:calc(100% - 56px);bottom:16px;
+  left:50%;transform:translateX(-50%);
+}
+.randa-encounter__stage .randa-encounter__sprite .pixel-character{
+  filter:brightness(0)!important;
+}
+@media(max-width:700px){
+  .pixel-battle .pixel-battle__room{min-height:260px;}
+  .pixel-battle .pixel-battle__room .pixel-battle__portrait{width:84%;}
+}
+</style>`;
+  html=html.replace("</head>",characterFitCss+"</head>");
+  const dictionaryMarker="const dictionary=new Set([...allWords].filter(valid));";
+  if(!html.includes(dictionaryMarker))throw new Error("Boss dictionary marker not found");
+  html=html.replace(dictionaryMarker,dictionaryMarker+"\nconst bossWinners=new Set(cfg.bossAnswers);\nconst bossDictionary=new Set("+JSON.stringify(bossWords)+".filter(w=>valid(w)&&(area2(w)<=area2('いろん')||bossWinners.has(w))));");
+  const bossValidation="if(!dictionary.has(w)){toast('辞書に登録されていない言葉です。時間は進みます。');return;}";
+  if(!html.includes(bossValidation))throw new Error("Boss validation marker not found");
+  html=html.replace(bossValidation,"if(!bossDictionary.has(w)){toast('異論戦では判定対象外の言葉です。時間は進みます。');return;}");
+  html=html.replace("window.MSRPG_TEST={score,area2,valid,bank,categoryWords,questCandidates,cfg};","window.MSRPG_TEST={score,area2,valid,bank,categoryWords,questCandidates,cfg,bossDictionary,bossWinners};");
+  html=window.MS_UPGRADE_TOWN(html);
+  document.open();
+  document.write(html);
+  document.close();
+})().catch(e=>{
+  document.getElementById("boot").textContent="読み込みに失敗しました。再読み込みしてください。";
+  console.error(e);
+});
+</script>
+</body>
+</html>
