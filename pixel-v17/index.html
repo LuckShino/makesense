@@ -29,6 +29,27 @@ body{margin:0;background:#f4ead1;font-family:system-ui,-apple-system,"Hiragino S
   for(const [key,value] of Object.entries(characters)) art[key]=value;
   html=html.slice(0,jsonStart)+JSON.stringify(art)+html.slice(end);
   html=html.replace("<title>メイクセンス | MAKE SENSE</title>","<title>メイクセンス | MAKE SENSE V17</title>");
+  const tutorialFitCss=`<style id="v17-tutorial-portrait-fit">
+.pixel-battle__room--tutorial .pixel-battle__portrait{
+  height:calc(100% - 12px);
+  bottom:0;
+}
+.pixel-battle__room--tutorial .pixel-battle__portrait .pixel-character{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center bottom;
+}
+@media(max-width:700px){
+  .pixel-battle__room--tutorial{min-height:215px;}
+  .pixel-battle__room--tutorial .pixel-battle__portrait{
+    width:76%;
+    height:calc(100% - 10px);
+    bottom:0;
+  }
+}
+</style>`;
+  html=html.replace("</head>",tutorialFitCss+"</head>");
   document.open();
   document.write(html);
   document.close();
