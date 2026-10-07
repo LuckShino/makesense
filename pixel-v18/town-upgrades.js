@@ -70,6 +70,10 @@ const changes=[
     "else if(a==='quest-open'){state.uiPlace=id;const m=residentMemory(id);m.newQuest=false;if(m.questFeedback!=='done')m.questFeedback=null;state.screen='quests';persist();render();}"
   ],
   [
+    "else if(a==='explore-intro'){checkHintOffer();state.screen='story';state.notice='explore';persist();render();}",
+    "else if(a==='explore-intro'){checkHintOffer();if(state.pending?.who==='異論'&&state.bossAttempts>=2){enterMap();}else{state.screen='story';state.notice='explore';persist();render();}}"
+  ],
+  [
     " else if(a==='submit-quest'){const p=person(state.uiPlace),w=$('#quest-word')?.value;if(!w){toast('回答する言葉を選んでください。');return;}if(questCandidates(p.quest,w)){if(!done(p.id))state.questDone.push(p.id);persist();toast('依頼達成！ '+p.person+'から感謝された。');render();}else toast('条件を満たしていないようだ。別の言葉を探してみよう。');}",
     " else if(a==='submit-quest')submitTownQuest();"
   ],
