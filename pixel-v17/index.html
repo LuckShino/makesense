@@ -22,7 +22,7 @@ body{margin:0;background:#f4ead1;font-family:system-ui,-apple-system,"Hiragino S
   let html=parts.join("");
   const marker="window.MS_INLINE_ART=";
   const start=html.indexOf(marker);
-  const end=html.indexOf(";</script>",start);
+  const end=html.indexOf(";</scr"+"ipt>",start);
   if(start<0||end<0)throw new Error("MS_INLINE_ART not found");
   const jsonStart=start+marker.length;
   const art=JSON.parse(html.slice(jsonStart,end));
