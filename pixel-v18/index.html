@@ -12,7 +12,7 @@ body{margin:0;background:#f4ead1;font-family:system-ui,-apple-system,"Hiragino S
 </head>
 <body>
 <div id="boot">ことばの街を読み込み中…</div>
-<script src="town-upgrades.js?v=20261007-2"></script>
+<script src="town-upgrades.js?v=20261007-3"></script>
 <script>
 (async()=>{
   const files=["../pixel-v16/chunks/000.txt","../pixel-v16/chunks/001.txt","../pixel-v16/chunks/002.txt","../pixel-v16/chunks/003.txt","../pixel-v16/chunks/004.txt","../pixel-v16/chunks/005.txt","../pixel-v16/chunks/006.txt","../pixel-v16/chunks/007.txt","../pixel-v16/chunks/008.txt","../pixel-v16/chunks/009.txt","../pixel-v16/chunks/010.txt","../pixel-v16/chunks/011.txt"];
@@ -30,6 +30,8 @@ body{margin:0;background:#f4ead1;font-family:system-ui,-apple-system,"Hiragino S
   const art=JSON.parse(html.slice(jsonStart,end));
   for(const [key,value] of Object.entries(characters)) art[key]=value;
   art["room-animal"]="room-animal.png";
+  art["town"]="town-map-v2.png";
+  art["town-mobile"]="town-map-mobile-v2.png";
   html=html.slice(0,jsonStart)+JSON.stringify(art)+html.slice(end);
   html=html.replace("<title>メイクセンス | MAKE SENSE</title>","<title>メイクセンス | MAKE SENSE V18</title>");
   const characterFitCss=`<style id="v17-character-fit">
